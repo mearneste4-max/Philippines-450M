@@ -730,9 +730,9 @@ page8(s, 0, '03', 'How it is built', 'One build serves all six industries; only 
 LAY = [('smartphone', 'Terminal', 'Hytera 450M Product Introduction PPT_202609_slide9_5.png',
         [('PNC660 450M', 'handheld'), ('MNC650 450M', 'vehicle radio'),
          ('P70 5G+450M', '2026 Q4'), ('PNC660Ex', 'ATEX, 2027 Q2')]),
-       ('radio-tower', 'Network', [pick('tower_site', str(REPO / '06_用到的图片' / '预处理成品' / 'tower_enb.png')), 'iBS一体化基站_1.png'],
-        [('RRU5800M', 'Band 31, on tower'), ('BBU5801M', 'baseband, CPRI'),
-         ('iBS3800', 'mobile, Band 31'), ('Core', 'private or shared')]),
+       ('radio-tower', 'Network', [str(REPO / '06_用到的图片' / '预处理成品' / 'rru5800m.png'), str(REPO / '06_用到的图片' / '预处理成品' / 'bbu5801m.png'), 'iBS一体化基站_1.png'],
+        [('Fixed site', 'RRU on tower + BBU'), ('Mobile site', 'iBS3800, Band 31'),
+         ('Core', 'private or shared'), ('Backhaul', 'fibre / MW / sat')]),
        ('layers', 'Application', 'Hytera PNC660 450MHz&MCX_slide8_3.png',
         [('MCS', 'PTT · video · data'), ('Dispatch', 'voice, video, GIS'),
          ('Recording', 'playback'), ('Device mgmt', 'zero-touch')])]
@@ -744,11 +744,17 @@ for i, (ic, name, img, items) in enumerate(LAY):
     box(s, x, 162, C3W, 222, C['CARD'])
     box(s, x + PAD, 172, C3W - 2 * PAD, 114, C['WHITE'])
     if isinstance(img, list):   # 网络层：固定站 + 移动站并排
-        # 固定站（塔上 RRU5800M + 塔下 BBU5801M）占大框，移动站 iBS3800 占小框
-        for (im2, tag, xx, ww) in zip(img, ['Fixed site', 'Mobile site'], [x + PAD, x + PAD + 162], [156, 78]):
-            fit(s, illu(im2, 1400), xx + 3, 176, ww - 6, 88)
-            t8(s, xx, 266, ww, 16, tag, 9.5, 'STEEL', F_HEAD, CEN, MID)
-        ln(s, x + PAD + 159, 182, x + PAD + 159, 276, C['LINE'], 0.75)
+        # 网络层：三台设备并排、底边对齐（产品陈列式），型号标在下方
+        from PIL import Image as _I
+        BASE_Y, MAXH = 262, 80
+        for im2, tag, xx, ww in zip(img, ['RRU5800M', 'BBU5801M', 'iBS3800'],
+                                     [x + PAD, x + PAD + 66, x + PAD + 164], [62, 94, 76]):
+            src2 = keepalpha(asset(im2) if not str(im2).startswith('/') else im2)
+            with _I.open(src2) as _im:
+                iw, ih = _im.size
+            r = min(ww / iw, MAXH / ih)
+            s.shapes.add_picture(str(src2), Pt(xx + (ww - iw * r) / 2), Pt(BASE_Y - ih * r), Pt(iw * r), Pt(ih * r))
+            t8(s, xx - 4, 266, ww + 8, 16, tag, 9, 'STEEL', F_HEAD, CEN, MID)
     else:
         fit(s, illu(img, 1400), x + PAD + 6, 176, C3W - 2 * PAD - 12, 106)
     for j, (k, d) in enumerate(items):
