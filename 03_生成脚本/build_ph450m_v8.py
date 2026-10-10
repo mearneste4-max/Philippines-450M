@@ -289,138 +289,157 @@ def newslide():
     return prs.slides.add_slide(BLANK)
 
 
-
 # ================================================================ v8 设计规则
-# 1. 标题即结论（action title），22pt，最多两行；不再用底部深蓝结论带。
-# 2. 字号下限：正文 12pt，标签 10pt，只有页脚来源允许 8pt。
-# 3. 页型四种：摘要卡（P2）、矩阵（P6）、行业页（P7–P12）、数据页（其余）。
-# 4. 一种图标体系：等距插画只做行业识别；项目符号一律用编号或绿色方块，不再拿手台线稿当符号。
-# 5. 页眉左上是段标识（A–D）+ 主题，右上是四段进度条 + 页码，取代目录页。
+# 1. 标题即结论（action title），一行为主；不用底部深蓝结论带。
+# 2. 字体：Segoe UI 家族（Windows 自带）——标题 Semibold、正文 Regular、大数字 Light。
+#    Mac 上缺 Segoe UI 会回退，对外演示请用 Windows 机器或导出 PDF。
+# 3. 字号：大数字 30–40pt，标题 22pt，短语 13–16pt，标签 9pt 加字距；页脚来源 8pt。
+# 4. 少字：每个要点 ≤ 6 个词，一个图标配一个短语；解释性的话放进讲稿，不上页面。
+# 5. 图标：Lucide 线性图标（ISC 许可，05_素材库/图标_lucide），同一页同一种画法；
+#    等距插画不再与线性图标混用。
+# 6. 页眉：左上段标识（A–D + 主题，字距拉开），右上四段进度条 + 页码，取代目录页。
+F_HEAD, F_BODY, F_NUM = 'Segoe UI Semibold', 'Segoe UI', 'Segoe UI Light'
 SECTIONS = ['A', 'B', 'C', 'D']
+ICON = REPO / '05_素材库' / '图标_lucide' / 'png'
+
+
+def t8(s, x, y, w, h, text, size=13, color='INK', font=F_BODY, align=L, anchor=TOP, line=1.2, spc=0):
+    tb = tx(s, x, y, w, h, text, size, False, color, align, anchor, line=line, after=0, font=font)
+    if spc:
+        for p in tb.text_frame.paragraphs:
+            for r in p.runs:
+                r._r.get_or_add_rPr().set('spc', str(int(spc * 100)))
+    return tb
+
+
+def cap(s, x, y, w, text, color='GREEN', size=9, align=L):
+    """字距拉开的全大写小标签。"""
+    return t8(s, x, y, w, 14, text.upper(), size, color, F_HEAD, align, spc=1.2)
+
+
+def icon(s, name, x, y, size, color='navy', disc=None, pad=0.24):
+    """线性图标；disc 给定时先画圆底，图标内缩 pad。"""
+    if disc:
+        box(s, x, y, size, size, C[disc], shape=MSO_SHAPE.OVAL)
+        x, y, size = x + size * pad, y + size * pad, size * (1 - 2 * pad)
+    return s.shapes.add_picture(str(ICON / ('%s_%s.png' % (name, color))), Pt(x), Pt(y), Pt(size), Pt(size))
 
 
 def page8(s, n, sec, topic, title):
     box(s, 0, 0, W, H, C['WHITE'])
-    tx(s, X0, 22, 600, 14, '%s  ·  %s' % (sec, topic.upper()), 9.5, True, 'GREEN')
+    cap(s, X0, 24, 600, '%s   %s' % (sec, topic))
     for i, k in enumerate(SECTIONS):
-        box(s, X1 - 160 + i * 30, 27, 26, 4, C['NAVY'] if k == sec else C['MIST'])
-    tx(s, X1 - 36, 18, 36, 18, '%02d' % n, 12, True, 'NAVY', R)
-    tx(s, X0, 40, CW, 60, title, 22, True, 'NAVY', L, ANCHOR.BOTTOM, line=1.08, after=0)   # 底对齐：单行标题贴近分隔线
-    ln(s, X0, 108, X1, 108, C['LINE'], 1.0)
+        box(s, X1 - 150 + i * 28, 29, 24, 3, C['NAVY'] if k == sec else C['MIST'])
+    t8(s, X1 - 30, 21, 30, 16, '%02d' % n, 11, 'NAVY', F_HEAD, R)
+    t8(s, X0, 40, CW, 70, title, 22, 'NAVY', F_HEAD, L, MID, line=1.05)   # 标题区居中：一行、两行都不留大空
 
 
 def foot(s, text):
-    tx(s, X0, 510, CW, 14, 'Source: ' + text, 8, False, 'SILVER')
+    t8(s, X0, 512, CW, 12, 'Source: ' + text, 7.5, 'SILVER')
 
 
 def dots(s, x, y, k, col='NAVY'):
     for i in range(3):
-        box(s, x + i * 15, y, 9, 9, C[col] if i < k else C['MIST'], shape=MSO_SHAPE.OVAL)
-
-
-def numbered(s, x, y, w, items, gap=46, size=12):
-    for i, t in enumerate(items):
-        yy = y + i * gap
-        box(s, x, yy, 22, 22, C['NAVY'], shape=MSO_SHAPE.OVAL)
-        tx(s, x, yy, 22, 22, str(i + 1), 10, True, 'WHITE', CEN, MID)
-        tx(s, x + 34, yy + 1, w - 34, gap - 6, t, size, False, 'INK', line=1.25)
+        box(s, x + i * 16, y, 10, 10, C[col] if i < k else C['MIST'], shape=MSO_SHAPE.OVAL)
 
 
 # ================================================================ P2 执行摘要
 s = newslide()
-page8(s, 2, 'A', 'The answer', '450 MHz does one job well: coverage that is still there after the storm')
-SUMMARY = [
-    ('01', 'WHAT IT IS', 'A coverage and resilience layer',
-     'Alongside Globe’s 4G and 5G, not instead of them. Voice, telemetry and low-rate video, not capacity.'),
-    ('02', 'WHY NOW', 'The band is mainstream',
-     'Networks in 77 countries, 39 of them already on LTE. Globe already holds the spectrum.'),
-    ('03', 'WHO PAYS FIRST', 'The utilities anchor the build',
-     'Electric cooperatives and water districts first; public safety and transport use the same sites.'),
-    ('04', 'WHAT WE PROPOSE', 'A pilot, not a build',
-     'One typhoon-belt province and two anchor customers, measured in Globe’s own terrain.'),
-]
-for i, (num, lab, head, body) in enumerate(SUMMARY):
-    r, c = divmod(i, 2)
-    x, y = X0 + c * 438, 124 + r * 164
-    box(s, x, y, 426, 152, C['CARD'])
-    box(s, x, y, 4, 152, C['NAVY'] if i < 3 else C['GREEN'])
-    tx(s, x + 22, y + 14, 50, 32, num, 24, True, 'LIME', L, MID)
-    tx(s, x + 74, y + 14, 320, 32, lab, 10, True, 'GREEN', L, MID)
-    tx(s, x + 22, y + 56, 390, 26, head, 17, True, 'NAVY')
-    tx(s, x + 22, y + 88, 386, 56, body, 12, False, 'STEEL', line=1.3)
-box(s, X0, 460, CW, 36, C['GREEN_L'])
-rich(s, X0 + 18, 460, CW - 36, 36,
-     [('Today’s ask:  ', True, 'GREEN'),
-      ('confirm the spectrum parameters and nominate a pilot province.', False, 'INK')], 12, anchor=MID)
-foot(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p11 Table 1; Brief (Jun 2022) p15')
+page8(s, 2, 'A', 'The answer', '450 MHz: the coverage that stays up after the storm')
+ANS = [('layers', 'What it is', 'A resilience layer', 'Alongside 4G and 5G'),
+       ('globe', 'Why now', 'A mainstream band', '77 countries deployed  ·  39 on LTE'),
+       ('hand-coins', 'Who pays first', 'The utilities', 'Power and water anchor the build'),
+       ('flag', 'What we propose', 'One pilot province', 'Two anchor customers, measured')]
+for i, (ic, lab, head, sub) in enumerate(ANS):
+    y = 122 + i * 82
+    icon(s, ic, X0, y + 6, 54, 'white', disc='NAVY' if i < 3 else 'GREEN')
+    cap(s, X0 + 74, y + 4, 300, lab, 'GREEN')
+    t8(s, X0 + 74, y + 20, 340, 26, head, 19, 'NAVY', F_HEAD)
+    t8(s, X0 + 74, y + 48, 360, 20, sub, 13, 'STEEL')
+    if i < 3:
+        ln(s, X0 + 74, y + 76, 470, y + 76, C['LINE'], 0.75)
+# 右：菲律宾地图 + 覆盖圈（示意 450 MHz 广覆盖）
+box(s, 520, 118, 392, 330, C['PAPER'])
+for k, (r, col) in enumerate([(150, 'EEF2F9'), (112, 'E4EBF7'), (74, 'DCE5F3')]):
+    box(s, 716 - r, 283 - r * 0.92, 2 * r, 2 * r * 0.92, col, shape=MSO_SHAPE.OVAL)
+fit(s, illu('菲律宾解决方案包装_slide11_1.png', 1400), 640, 136, 152, 296)
+icon(s, 'radio-tower', 690, 236, 40, 'white', disc='GREEN', pad=0.22)
+t8(s, 532, 420, 370, 18, 'One low-band layer across 7,641 islands', 11, 'STEEL', F_BODY, CEN)
+# 底：今天要的决定
+box(s, X0, 462, CW, 38, C['NAVY'])
+icon(s, 'arrow-right', X0 + 16, 471, 20, 'white')
+t8(s, X0 + 46, 462, 300, 38, 'Today’s ask', 13, 'LIME', F_HEAD, L, MID)
+t8(s, X0 + 170, 462, 680, 38, 'Confirm the spectrum  ·  Nominate a pilot province', 13, 'WHITE', F_BODY, L, MID)
+foot(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p11 Table 1; NAMRIA')
 
 # ================================================================ P6 行业优先级
 s = newslide()
-page8(s, 6, 'C', 'Who pays first', 'Start where the money and the fit are both highest: the utilities')
-RANK = [
-    ('Power', '电力抢修.png', 3, 3, 3,
-     'The utilities anchor 450connect in Germany and TNB in Malaysia; scattered assets need a private data path.'),
-    ('Water', '水库大坝.png', 2, 3, 3,
-     'Same sites and same IoT as power. Budgets vary: only 149 of 532 districts meet the 20% loss limit.'),
-    ('Emergency', '消防站火灾.png', 2, 3, 2,
-     'The direct answer to the typhoon risk. Paid as standby readiness, not by usage.'),
-    ('Police', '警察局.png', 3, 2, 1,
-     'Large user base, but DMR and TETRA are already in service. The entry point is interoperability.'),
-    ('Rail', '交通枢纽.png', 2, 3, 1,
-     'Corridor coverage suits the band, but the rail network is limited and projects run long.'),
-    ('Port', '船舶.png', 2, 2, 2,
-     'Coverage over water is an advantage, but there is no 450 MHz port deployment to point to yet.'),
-]
-COLS = [('ABILITY TO PAY', 334), ('FIT WITH 450 MHZ', 424), ('TIME TO REVENUE', 514)]
-tx(s, X0 + 44, 118, 120, 14, 'INDUSTRY', 10, True, 'STEEL')
-for t, x in COLS:
-    tx(s, x - 18, 118, 92, 14, t, 9, True, 'STEEL', CEN)
-tx(s, 610, 118, 300, 14, 'WHY', 10, True, 'STEEL')
-for i, (name, ic, pay, fit_, speed, why) in enumerate(RANK):
-    y = 138 + i * 52
+page8(s, 6, 'C', 'Who pays first', 'Start with the utilities: they pay first and fit best')
+RANK = [('zap', 'Power', 3, 3, 3, 'Proven anchor abroad'),
+        ('droplets', 'Water', 2, 3, 3, 'Same sites as power'),
+        ('siren', 'Emergency', 2, 3, 2, 'Typhoon readiness'),
+        ('shield', 'Police', 3, 2, 1, 'Interoperate, not replace'),
+        ('train-front', 'Rail', 2, 3, 1, 'Long project cycles'),
+        ('ship', 'Port', 2, 2, 2, 'No 450 MHz precedent yet')]
+COLS = [('hand-coins', 'Ability to pay', 352), ('target', 'Fit with 450', 470), ('clock', 'Speed to revenue', 588)]
+for ic, t, x in COLS:
+    icon(s, ic, x + 12, 114, 18, 'steel')
+    cap(s, x - 30, 136, 104, t, 'STEEL', 8, CEN)
+cap(s, 700, 136, 200, 'Key point', 'STEEL', 8)
+for i, (ic, name, pay, fit_, speed, key) in enumerate(RANK):
+    y = 156 + i * 50
     anchor = i < 2
-    box(s, X0, y, CW, 46, C['GREEN_L'] if anchor else (C['CARD'] if i % 2 == 0 else C['PAPER']))
-    tx(s, X0 + 10, y, 26, 46, str(i + 1), 20, True, 'GREEN' if anchor else 'NAVY', CEN, MID)
-    fit(s, illu(ic), X0 + 44, y + 4, 44, 38)
-    tx(s, X0 + 98, y, 160, 46, name, 14, True, 'NAVY', L, MID)
-    for (t, x), k in zip(COLS, (pay, fit_, speed)):
-        dots(s, x + 6, y + 18, k, 'GREEN' if anchor else 'NAVY')
-    tx(s, 610, y, 296, 46, why, 10.5, False, 'INK', L, MID, line=1.2)
-box(s, X0 - 8, 138, 4, 98, C['GREEN'])
-tx(s, X0, 456, 500, 16, 'GREEN ROWS = ANCHOR CUSTOMERS', 9.5, True, 'GREEN')
-tx(s, X0, 474, CW, 30,
-   'Our reading, to be tested in the pilot. Three dots = strongest. Police has the largest budget but the slowest path to revenue.',
-   10.5, False, 'STEEL', line=1.25)
+    box(s, X0, y, CW, 44, C['GREEN_L'] if anchor else (C['CARD'] if i % 2 == 0 else C['PAPER']))
+    t8(s, X0 + 14, y, 24, 44, str(i + 1), 20, 'GREEN' if anchor else 'SILVER', F_NUM, CEN, MID)
+    icon(s, ic, X0 + 50, y + 7, 30, 'white', disc='GREEN' if anchor else 'NAVY')
+    t8(s, X0 + 94, y, 160, 44, name, 15, 'NAVY', F_HEAD, L, MID)
+    for (_, _, x), k in zip(COLS, (pay, fit_, speed)):
+        dots(s, x + 4, y + 17, k, 'GREEN' if anchor else 'NAVY')
+    t8(s, 700, y, 206, 44, key, 12, 'INK', F_BODY, L, MID)
+icon(s, 'check', X0, 462, 16, 'green')
+t8(s, X0 + 22, 460, 600, 20, 'Green rows: the anchor customers', 11, 'GREEN', F_HEAD)
+t8(s, X0 + 22, 478, 700, 18, 'Our reading, to be tested in the pilot', 11, 'STEEL')
 foot(s, 'Hytera assessment; 450 MHz Alliance, Annual Global Update (Dec 2025) p8-p9; LWUA NRW data (2025)')
 
 # ================================================================ P7 电力（行业页样板）
 s = newslide()
-page8(s, 7, 'C', 'Priority 1 of 6  ·  Power',
-      'Power is the anchor customer - as it is for 450connect in Germany and TNB in Malaysia')
+page8(s, 7, 'C', 'Priority 1 of 6  ·  Power', 'Power anchors the network, as it does in Germany and Malaysia')
 photo(s, asset('20260908_海本二部培训_HyTalk-MC方案_课件_V6.1_slide41_1.png'),
-      X0, 124, 400, 236, fy=0.5)
-tx(s, X0, 364, 400, 14, 'Line crews on a repair job. Illustrative imagery.', 8.5, False, 'SILVER')
-for i, (v, lab) in enumerate([('121', 'electric cooperatives under NEA serve the rural grid'),
-                              ('1.4M', 'electricity consumers without power after Typhoon Tino, Nov 2025')]):
-    y = 124 + i * 64
-    box(s, 470, y, 442, 56, C['CARD'])
-    box(s, 470, y, 4, 56, C['NAVY'])
-    tx(s, 488, y, 96, 56, v, 24, True, 'NAVY', L, MID)
-    tx(s, 590, y, 306, 56, lab, 12, False, 'INK', L, MID, line=1.25)
-klab(s, 470, 262, 'What 450 MHz does')
-numbered(s, 470, 282, 442, [
-    'A private data path for SCADA, feeder automation and substations',
-    'Push-to-talk, video and lone-worker alarms for line crews',
-    'Smart meters on the same sites, reaching boxes deep indoors',
-], gap=30, size=12)
-for j, (lab, body, col, bg) in enumerate([
-        ('PROOF POINT', 'Germany: 450connect, Band 72, more than 95% national coverage.  Malaysia: TNB, Band 31, initial deployment in four areas.', 'NAVY', 'CARD'),
-        ('WHAT GLOBE SELLS', 'A capacity package for the cooperative, IoT connectivity per meter, and SCADA integration and O&M.', 'GREEN', 'GREEN_L')]):
-    x = X0 + j * 438
-    box(s, x, 392, 426, 96, C[bg])
-    box(s, x, 392, 426, 4, C[col])
-    tx(s, x + 18, 406, 390, 14, lab, 10, True, col)
-    tx(s, x + 18, 426, 390, 64, body, 12, False, 'INK', line=1.3)
+      X0, 122, 384, 250, fy=0.5)
+icon(s, 'zap', X0 + 14, 136, 44, 'white', disc='NAVY')
+t8(s, X0, 376, 384, 12, 'Illustrative imagery', 8, 'SILVER')
+# 右上：两个菲律宾数字
+for i, (v, lab) in enumerate([('121', 'electric cooperatives\nunder NEA'),
+                              ('1.4M', 'consumers cut off\nby Typhoon Tino')]):
+    x = 456 + i * 230
+    t8(s, x, 116, 220, 50, v, 40, 'NAVY', F_NUM)
+    t8(s, x, 168, 220, 36, lab, 12, 'STEEL', line=1.15)
+ln(s, 456, 216, X1, 216, C['LINE'], 0.75)
+# 右中：三个能力图块
+cap(s, 456, 228, 300, 'What 450 MHz does')
+for i, (ic, t) in enumerate([('cpu', 'SCADA &\nfeeder automation'),
+                             ('radio', 'Push-to-talk\nfor line crews'),
+                             ('gauge', 'Smart meters,\ndeep indoors')]):
+    x = 456 + i * 152
+    box(s, x, 250, 144, 122, C['CARD'])
+    icon(s, ic, x + 16, 264, 34, 'navy')
+    t8(s, x + 16, 312, 120, 50, t, 12.5, 'NAVY', F_HEAD, line=1.15)
+# 底：先例 + Globe 卖什么
+box(s, X0, 396, 418, 100, C['CARD'])
+icon(s, 'badge-check', X0 + 16, 410, 26, 'navy')
+cap(s, X0 + 52, 416, 200, 'Proof point', 'NAVY')
+for i, (who, what) in enumerate([('Germany  450connect', 'Band 72  ·  >95% coverage'),
+                                 ('Malaysia  TNB', 'Band 31  ·  4 areas')]):
+    y = 444 + i * 24
+    t8(s, X0 + 18, y, 180, 20, who, 12.5, 'NAVY', F_HEAD)
+    t8(s, X0 + 196, y, 210, 20, what, 12.5, 'STEEL')
+box(s, 494, 396, 418, 100, C['GREEN_L'])
+icon(s, 'hand-coins', 510, 410, 26, 'green')
+cap(s, 546, 416, 200, 'What Globe sells', 'GREEN')
+for i, t in enumerate(['Capacity package', 'IoT per meter', 'SCADA O&M']):
+    x = 510 + i * 132
+    box(s, x, 446, 124, 34, C['WHITE'], shape=MSO_SHAPE.ROUNDED_RECTANGLE)
+    t8(s, x, 446, 124, 34, t, 12, 'GREEN', F_HEAD, CEN, MID)
 foot(s, 'NEA; Department of Energy (5 Nov 2025); 450 MHz Alliance, RFI for devices (2025) p5, Annual Global Update (Dec 2025) p8')
 
 # ---------------------------------------------------------------- 备注占位符（同 v7）
