@@ -502,7 +502,7 @@ def waffle_png(frac, n=24):
     return out
 
 
-PANELS = [('410 / 450 MHz', 0.0, '100%', '1×'),
+PANELS = [('450 MHz', 0.0, '100%', '1×'),
           ('740 MHz', 0.087, '91%', '2.5–3×'),
           ('2350 MHz', 0.413, '59%', '12–15×')]
 cap(s, X0, 122, 300, 'What the Philippines needs')
@@ -532,7 +532,7 @@ for k, (col, lab) in enumerate([('NAVY', 'covered'), ('MIST', 'not covered'), ('
     box(s, x, 425, 10, 10, C[col])
     t8(s, x + 16, 422, 80, 16, lab, 10, 'STEEL', F_BODY, L, MID)
 strip(s, 452, 'info', 'Not a capacity layer:', '3–5 MHz carries voice, telemetry and low-rate video, alongside 4G and 5G.', h=40)
-foot(s, 'NAMRIA; WorldRiskReport 2025; PAGASA; 450 MHz Alliance, Brief (Jun 2022) p15 - same site grid, reference modelled at 410 MHz')
+foot(s, 'NAMRIA; WorldRiskReport 2025; PAGASA; 450 MHz Alliance Brief (Jun 2022) p15, grid modelled at 410 MHz. Vs 410 MHz, 450 MHz adds ~1 dB path loss, 740 MHz ~7 dB (Hata).')
 
 # ================================================================ P5 频段已是主流（世界地图 + 欧洲放大）
 import json
