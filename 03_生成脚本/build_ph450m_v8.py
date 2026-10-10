@@ -386,7 +386,7 @@ def pick(stem, fallback):
 
 
 PH_MAP = '菲律宾解决方案包装_slide11_1.png'
-HANDSET = '终端_多模手台_1.png'
+HANDSET = str(REPO / '06_用到的图片' / '预处理成品' / 'pnc660_450m_pair.png')   # PNC660 450M 正反面
 
 
 def cover_frame(s):
@@ -397,7 +397,7 @@ def cover_frame(s):
     fit(s, illu('hytera_logo.png', 900), X1 - 128, 34, 110, 40)
     rings(s, 724, 290, (176, 132, 88), ('F3F6FB', 'EAF0F8', 'DFE7F4'))
     fit(s, illu(PH_MAP, 1400), 650, 112, 170, 340)
-    fit(s, illu(HANDSET), 552, 190, 86, 250)
+    fit(s, HANDSET, 520, 196, 170, 240)
     ln(s, X0, 470, X1, 470, C['LINE'], 0.75)
 
 
@@ -416,7 +416,7 @@ CHAPTERS = [('01', 'radio-tower', '450 MHz advantages', 'What can this band do t
             ('02', 'users', 'Target industries', 'Who needs it, and who would pay first?'),
             ('03', 'globe', 'Reference cases', 'How is it built, and where does it run today?'),
             ('04', 'coins', 'Business model', 'How could the network pay for itself?')]
-PAGES = ['Pages 3 – 5', 'Pages 6 – 13', 'Pages 14 – 16', 'Pages 17 – 18']   # 增删页后同步改这里
+PAGES = ['Pages 3 – 5', 'Pages 6 – 13', 'Pages 14 – 17', 'Pages 18 – 19']   # 增删页后同步改这里
 
 
 def numicon(s, ic, num, x, y, size, disc='NAVY', badge='LIME', icol='white'):
@@ -730,7 +730,7 @@ page8(s, 0, '03', 'How it is built', 'One build serves all six industries; only 
 LAY = [('smartphone', 'Terminal', 'Hytera 450M Product Introduction PPT_202609_slide9_5.png',
         [('PNC660 450M', 'handheld'), ('MNC650 450M', 'vehicle radio'),
          ('P70 5G+450M', '2026 Q4'), ('PNC660Ex', 'ATEX, 2027 Q2')]),
-       ('radio-tower', 'Network', ['通信铁塔_3.png', 'iBS一体化基站_1.png'],
+       ('radio-tower', 'Network', [str(REPO / '06_用到的图片' / '预处理成品' / 'tower_enb.png'), 'iBS一体化基站_1.png'],
         [('Fixed eNB', 'tower sites'), ('Mobile eNB', 'portable kit'),
          ('Core', 'private or shared'), ('Backhaul', 'fibre / MW / sat')]),
        ('layers', 'Application', 'Hytera PNC660 450MHz&MCX_slide8_3.png',
@@ -766,6 +766,46 @@ for j, (ic, k, v, bg, col) in enumerate([
     icap(s, ic, x + PAD, 414, k, col, 'GREEN' if col == 'green' else 'NAVY')
     t8(s, x + PAD, 446, 388, 40, v, 12.5, 'INK', F_BODY, L, TOP, line=1.2)
 foot(s, '450M Roadmap; HyTalk MC V6.1; 450 MHz Alliance, Equipment Report (May 2025) p5; 450connect whitelist certificate')
+
+# ================================================================ 生态与兼容性（王总意见：体现 450 生态成员身份 + 与主流厂商核心网兼容）
+s = newslide()
+page8(s, 0, '03', 'Ecosystem and compatibility', 'A 450 MHz Alliance member, built to plug into the network Globe runs')
+cap(s, X0, 122, 380, 'In the 450 MHz ecosystem')
+ECO = [('badge-check', '450 MHz Alliance member', 'Joined August 2024'),
+       ('smartphone', 'Alliance device supplier list', 'Equipment Report 2025'),
+       ('radio-tower', 'Alliance macro eNB supplier list', 'Equipment Report 2025'),
+       ('check', 'Operator-accepted terminal', '450connect whitelist, Germany'),
+       ('layers', 'Band 31 and Band 72 portfolio', 'Terminals, eNB and MCS platform')]
+for i, (ic, head, sub) in enumerate(ECO):
+    y = 144 + i * 58
+    box(s, X0, y, 384, 52, C['GREEN_L'] if i == 0 else C['CARD'])
+    icon(s, ic, X0 + PAD, y + 9, 34, 'white', disc='GREEN' if i == 0 else 'NAVY')
+    t8(s, X0 + 64, y + 6, 310, 22, head, 13, 'NAVY', F_HEAD, L, MID)
+    t8(s, X0 + 64, y + 27, 310, 18, sub, 10.5, 'STEEL', F_BODY, L, MID)
+cap(s, 456, 122, 456, 'Compatible by design  ·  3GPP standard interfaces')
+HY = [('smartphone', 'Hytera terminals', 'LTE Uu'), ('radio-tower', 'Hytera 450 MHz eNB', 'S1'),
+      ('layers', 'Hytera MCS platform', 'SIP / MCX')]
+for i, (ic, t, itf) in enumerate(HY):
+    y = 144 + i * 72
+    box(s, 456, y, 168, 60, C['NAVY'])
+    icon(s, ic, 456 + 12, y + 18, 24, 'white')
+    t8(s, 456 + 44, y, 118, 60, t, 11.5, 'WHITE', F_HEAD, L, MID, line=1.1)
+    ln(s, 624, y + 30, 744, y + 30, C['NAVY_L'], 1.25)
+    chip(s, 644, y + 19, 80, 22, itf, 'NAVY', 'MIST', 9.5)
+box(s, 744, 144, 168, 204, C['GREEN_L'])
+box(s, 744, 144, 168, 4, C['GREEN'])
+icon(s, 'server', 744 + PAD, 162, 30, 'green')
+t8(s, 744 + PAD, 198, 140, 40, 'Globe\u2019s existing core', 13, 'NAVY', F_HEAD, L, TOP, line=1.1)
+t8(s, 744 + PAD, 238, 140, 18, 'EPC / 5GC from', 10.5, 'STEEL', F_BODY, L, MID)
+for k, v in enumerate(['Huawei', 'ZTE', 'Nokia', 'Ericsson']):
+    icon(s, 'check', 744 + PAD, 262 + k * 20, 12, 'green')
+    t8(s, 744 + PAD + 18, 258 + k * 20, 120, 20, v, 11.5, 'INK', F_HEAD, L, MID)
+box(s, 456, 362, 456, 66, C['PAPER'])
+icon(s, 'network', 456 + PAD, 380, 30, 'navy')
+t8(s, 456 + 58, 368, 384, 30, 'Multi-vendor by standard', 13, 'NAVY', F_HEAD, L, MID)
+t8(s, 456 + 58, 394, 384, 30, 'The Alliance\u2019s eNB list itself spans Ericsson, Huawei, Hytera, Nokia and ZTE.', 10.5, 'STEEL', F_BODY, L, MID, line=1.15)
+strip(s, 452, 'handshake', 'For Globe:', 'add Hytera radio and terminals without replacing the core you run today. Interoperability is verified per project.', h=40)
+foot(s, 'Hytera news release (Aug 2024); 450 MHz Alliance, Equipment Report (May 2025) p5 \u00a74.1-4.2; 450connect whitelist; 3GPP TS 36.300 / 36.413 / 23.280')
 
 # ================================================================ P14 参考案例：3 个 450 MHz 网络 + 3 个 MCS 部署（1:1，卡片同规格）
 s = newslide()
