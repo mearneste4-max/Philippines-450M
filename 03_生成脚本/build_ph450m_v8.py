@@ -299,7 +299,7 @@ def newslide():
 # 6. 网格：版心 48–912；左列 48–432、右列 456–912；三栏宽 272、间距 24；卡片内边距 16。
 #    同一行的图标与文字按中心线对齐（文字框与图标同 y、同 h，垂直居中）。
 F_HEAD, F_BODY, F_NUM = 'Segoe UI Semibold', 'Segoe UI', 'Segoe UI Light'
-SECTIONS = ['A', 'B', 'C', 'D']
+SECTIONS = ['01', '02', '03', '04']
 ICON = REPO / '05_素材库' / '图标_lucide' / 'png'
 PAD = 16
 COL3 = [X0 + i * 296 for i in range(3)]   # 三栏 x，栏宽 272
@@ -335,8 +335,9 @@ def icap(s, name, x, y, text, color='navy', capcol='NAVY', size=24):
 
 
 def page8(s, n, sec, topic, title):
+    n = len(prs.slides._sldIdLst)          # 页码自动取当前页序，增删页不用手改
     box(s, 0, 0, W, H, C['WHITE'])
-    cap(s, X0, 22, 600, '%s   %s' % (sec, topic), h=16, anchor=MID)
+    cap(s, X0, 22, 600, ('%s   %s' % (sec, topic)) if sec else topic, h=16, anchor=MID)
     for i, k in enumerate(SECTIONS):
         box(s, X1 - 154 + i * 28, 28.5, 24, 3, C['NAVY'] if k == sec else C['MIST'])
     t8(s, X1 - 30, 22, 30, 16, '%02d' % n, 11, 'NAVY', F_HEAD, R, MID)
@@ -404,67 +405,71 @@ def cover_frame(s):
 s = newslide()
 cover_frame(s)
 cap(s, 68, 126, 440, 'Hytera  ×  Globe Telecom')
-t8(s, 68, 150, 470, 130, '450 MHz\nMission-Critical Network\nfor the Philippines', 32, 'NAVY', F_HEAD, line=1.06)
+t8(s, 68, 150, 470, 130, 'Exploring Application\nScenarios for a 450 MHz\nMission-Critical Network', 30, 'NAVY', F_HEAD, line=1.06)
 box(s, 68, 292, 64, 4, C['LIME'])
 t8(s, 68, 312, 440, 50, 'Coverage and resilience for utilities,\npublic safety and transport', 14, 'STEEL', line=1.3)
 t8(s, X0, 478, 420, 24, 'Initial technical exchange  ·  October 2026', 11, 'NAVY', F_HEAD, L, MID)
 t8(s, 512, 478, 400, 24, 'Hytera Communications Corporation Limited', 9.5, 'SILVER', F_BODY, R, MID)
 
-# ================================================================ P2 执行摘要
-s = newslide()
-page8(s, 2, 'A', 'The answer', '450 MHz: the coverage that stays up after the storm')
-ANS = [('layers', 'What it is', 'A resilience layer', 'Alongside 4G and 5G'),
-       ('globe', 'Why now', 'A mainstream band', '77 countries deployed  ·  39 on LTE'),
-       ('hand-coins', 'Who pays first', 'The utilities', 'Power and water anchor the build'),
-       ('flag', 'What we propose', 'One pilot province', 'Two anchor customers')]
-for i, (ic, lab, head, sub) in enumerate(ANS):
-    y = 122 + i * 82
-    icon(s, ic, X0, y + 9, 54, 'white', disc='NAVY' if i < 3 else 'GREEN')   # 圆心 = 文字块中心 y+36
-    cap(s, X0 + 74, y + 4, 300, lab, 'GREEN')
-    t8(s, X0 + 74, y + 20, 340, 26, head, 19, 'NAVY', F_HEAD)
-    t8(s, X0 + 74, y + 48, 360, 20, sub, 13, 'STEEL')
-    if i < 3:
-        ln(s, X0 + 74, y + 76, 474, y + 76, C['LINE'], 0.75)
-box(s, 520, 122, 392, 326, C['PAPER'])
-rings(s, 716, 276, (150, 112, 74), ('EEF2F9', 'E4EBF7', 'DCE5F3'))
-fit(s, illu(PH_MAP, 1400), 640, 130, 152, 290)
-icon(s, 'radio-tower', 696, 232, 40, 'white', disc='GREEN', pad=0.22)
-t8(s, 520, 420, 392, 20, 'One low-band layer across 7,641 islands', 11, 'STEEL', F_BODY, CEN, MID)
-box(s, X0, 462, CW, 38, C['NAVY'])
-icon(s, 'arrow-right', X0 + PAD, 471, 20, 'white')
-t8(s, X0 + 48, 462, 120, 38, 'Today’s ask', 13, 'LIME', F_HEAD, L, MID)
-t8(s, X0 + 170, 462, 680, 38, 'Confirm the spectrum  ·  Nominate a pilot province', 13, 'WHITE', F_BODY, L, MID)
-foot(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p11 Table 1; NAMRIA')
+# ================================================================ 目录与章节过渡页
+CHAPTERS = [('01', 'radio-tower', '450 MHz advantages', 'What can this band do that mid-band cannot?'),
+            ('02', 'users', 'Target industries', 'Who needs it, and who would pay first?'),
+            ('03', 'globe', 'Reference cases', 'How is it built, and where does it run today?'),
+            ('04', 'coins', 'Business model', 'How could the network pay for itself?')]
+PAGES = ['Pages 3 – 5', 'Pages 6 – 13', 'Pages 14 – 16', 'Pages 17 – 18']   # 增删页后同步改这里
 
-# ================================================================ P3 国情
-s = newslide()
-page8(s, 3, 'B', 'The gap', 'What is missing is coverage that survives the storm')
-GAP = [('mountain', '7,641', 'islands, mostly mountainous'),
-       ('activity', '#1', 'WorldRiskIndex 2025'),
-       ('tornado', '~20', 'tropical cyclones a year'),
-       ('zap', '1.4M', 'consumers cut off by Typhoon Tino')]
-for i, (ic, v, lab) in enumerate(GAP):
-    r, c = divmod(i, 2)
-    x, y = X0 + c * 198, 122 + r * 162
-    box(s, x, y, 186, 150, C['CARD'])
-    icon(s, ic, x + PAD, y + PAD, 36, 'white', disc='NAVY')
-    t8(s, x + PAD, y + 62, 154, 44, v, 34, 'NAVY', F_NUM)
-    t8(s, x + PAD, y + 110, 154, 34, lab, 12, 'STEEL', line=1.15)
-photo(s, asset('菲律宾解决方案包装_slide3_5.jpg'), 456, 122, 456, 312, fy=0.5)
-t8(s, 456, 438, 456, 14, 'Transmission lines over flooded ground. Illustrative imagery.', 8, 'SILVER')
-for j, (ic, k, v, bg, kc, vc, icol) in enumerate([
-        ('building-2', '4G / 5G', 'capacity in the cities', 'CARD', 'NAVY', 'STEEL', 'navy'),
-        ('radio-tower', '450 MHz', 'coverage that stays up', 'NAVY', 'LIME', 'WHITE', 'white')]):
-    x, w = (X0, 384) if j == 0 else (456, 456)
-    box(s, x, 458, w, 42, C[bg])
-    icon(s, ic, x + PAD, 469, 20, icol)
-    t8(s, x + 48, 458, 100, 42, k, 14, kc, F_HEAD, L, MID)
-    t8(s, x + 140, 458, w - 156, 42, v, 13, vc, F_BODY, L, MID)
-foot(s, 'NAMRIA; WorldRiskReport 2025; PAGASA; Department of Energy (5 Nov 2025)')
 
-# ================================================================ P4 物理覆盖
+def numicon(s, ic, num, x, y, size, disc='NAVY', badge='LIME', icol='white'):
+    """带序号的图标：圆底图标 + 右上角序号圆章。"""
+    icon(s, ic, x, y, size, icol, disc=disc)
+    b = size * 0.42
+    box(s, x + size - b * 0.75, y - b * 0.2, b, b, C[badge], 'FFFFFF', 1.5, shape=MSO_SHAPE.OVAL)
+    t8(s, x + size - b * 0.75, y - b * 0.2, b, b, num, b * 0.5, 'NAVY' if badge == 'LIME' else 'WHITE', F_HEAD, CEN, MID)
+
+
+def divider(s, k):
+    """章节过渡页：左侧巨号章节序号与标题，右侧四章列表、当前章高亮。"""
+    num, ic, title, q = CHAPTERS[k]
+    box(s, 0, 0, W, H, C['WHITE'])
+    box(s, 0, 0, W, 6, C['NAVY'])
+    box(s, 0, 0, 320, 6, C['LIME'])
+    cap(s, X0 + 20, 120, 300, 'Chapter %s of 04' % num)
+    t8(s, X0 + 14, 136, 380, 150, num, 130, 'NAVY', F_NUM, L, MID)
+    box(s, X0 + 20, 296, 64, 4, C['LIME'])
+    t8(s, X0 + 20, 314, 380, 44, title, 30, 'NAVY', F_HEAD, L, MID)
+    t8(s, X0 + 20, 360, 380, 44, q, 15, 'STEEL', F_BODY, L, TOP, line=1.25)
+    for i, (n2, ic2, t2, _) in enumerate(CHAPTERS):
+        y = 120 + i * 80
+        on = i == k
+        box(s, 488, y, 424, 68, C['GREEN_L'] if on else C['PAPER'])
+        if on:
+            box(s, 488, y, 4, 68, C['GREEN'])
+        numicon(s, ic2, n2, 510, y + 14, 40, 'GREEN' if on else 'MIST', 'NAVY' if on else 'SILVER',
+                'white' if on else 'steel')
+        t8(s, 574, y, 320, 68, t2, 17 if on else 14, 'NAVY' if on else 'SILVER', F_HEAD, L, MID)
+    t8(s, X1 - 30, 500, 30, 16, '%02d' % len(prs.slides._sldIdLst), 11, 'NAVY', F_HEAD, R, MID)
+
+
 s = newslide()
-page8(s, 4, 'B', 'Why 450 MHz', 'One low-band grid covers what mid-band leaves dark')
+page8(s, 0, '', 'Agenda', 'Four questions for today\u2019s discussion')
+for i, (num, ic, title, q) in enumerate(CHAPTERS):
+    x = X0 + i * 222
+    box(s, x, 124, 198, 300, C['CARD'])
+    box(s, x, 124, 198, 4, C['NAVY'] if i < 3 else C['GREEN'])
+    numicon(s, ic, num, x + PAD, 148, 56)
+    cap(s, x + PAD, 222, 160, 'Chapter %s' % num, 'GREEN')
+    t8(s, x + PAD, 240, 168, 50, title, 17, 'NAVY', F_HEAD, L, TOP, line=1.1)
+    ln(s, x + PAD, 300, x + 198 - PAD, 300, C['LINE'], 0.75)
+    t8(s, x + PAD, 310, 168, 70, q, 12.5, 'STEEL', F_BODY, L, TOP, line=1.25)
+    cap(s, x + PAD, 396, 160, PAGES[i], 'SILVER', 8.5)
+strip(s, 444, 'handshake', 'An open discussion:', 'the spectrum is Globe\u2019s; these are options to explore together.')
+
+s = newslide()
+divider(s, 0)
+
+# ================================================================ 第 1 章：需求 + 450 MHz 的回答（原 The gap 与 Why 450 合并）
+s = newslide()
+page8(s, 0, '01', 'Why 450 MHz', 'Reach every island, cross the mountains, stay up through the storm')
 SITES = [(2, 2), (2, 7), (7, 2), (7, 7)]
 
 
@@ -500,37 +505,39 @@ def waffle_png(frac, n=24):
 PANELS = [('410 / 450 MHz', 0.0, '100%', '1×'),
           ('740 MHz', 0.087, '91%', '2.5–3×'),
           ('2350 MHz', 0.413, '59%', '12–15×')]
+cap(s, X0, 122, 300, 'What the Philippines needs')
+NEEDS = [('waves', 'Reach far', '7,641 islands', 'One site where mid-band needs 2.5–15'),
+         ('mountain', 'Cross rugged terrain', 'Mostly mountainous islands', 'Bends over ridges and into valleys'),
+         ('tornado', 'Survive the storm', '#1 WorldRiskIndex  ·  ~20 cyclones a year', 'Few sites, so backup power is affordable')]
+for i, (ic, head, fact, ans) in enumerate(NEEDS):
+    y = 144 + i * 92
+    box(s, X0, y, 292, 84, C['CARD'])
+    icon(s, ic, X0 + PAD, y + 20, 44, 'white', disc='NAVY')
+    t8(s, X0 + 72, y + 8, 212, 22, head, 14, 'NAVY', F_HEAD, L, MID)
+    t8(s, X0 + 72, y + 30, 212, 18, fact, 10.5, 'STEEL', F_BODY, L, MID)
+    icon(s, 'arrow-right', X0 + 72, y + 55, 12, 'green')
+    t8(s, X0 + 88, y + 50, 198, 24, ans, 10, 'GREEN', F_HEAD, L, MID, line=1.1)
+cap(s, 360, 122, 400, 'What 450 MHz delivers  ·  same site grid')
 for i, (f, unc, pct, sites) in enumerate(PANELS):
-    x = X0 + i * 172
-    box(s, x, 122, 160, 300, C['CARD'] if i else C['GREEN_L'])
-    cap(s, x, 134, 160, f, 'NAVY' if i else 'GREEN', 10, CEN)
-    s.shapes.add_picture(str(waffle_png(unc)), Pt(x + 8), Pt(156), Pt(144), Pt(144))
-    t8(s, x, 306, 160, 40, pct, 30, 'NAVY' if i else 'GREEN', F_NUM, CEN, MID)
-    t8(s, x, 344, 160, 16, 'covered', 11, 'STEEL', F_BODY, CEN, MID)
-    ln(s, x + 24, 368, x + 136, 368, C['LINE'], 0.75)
-    t8(s, x, 376, 160, 24, sites, 17, 'NAVY', F_HEAD, CEN, MID)
-    t8(s, x, 400, 160, 14, 'sites to close the gap', 9.5, 'STEEL', F_BODY, CEN, MID)
+    x = 360 + i * 188
+    box(s, x, 144, 176, 268, C['CARD'] if i else C['GREEN_L'])
+    cap(s, x, 154, 176, f, 'NAVY' if i else 'GREEN', 10, CEN)
+    s.shapes.add_picture(str(waffle_png(unc)), Pt(x + 16), Pt(174), Pt(144), Pt(144))
+    t8(s, x, 322, 176, 36, pct, 28, 'NAVY' if i else 'GREEN', F_NUM, CEN, MID)
+    t8(s, x, 356, 176, 14, 'covered', 10.5, 'STEEL', F_BODY, CEN, MID)
+    ln(s, x + 30, 376, x + 146, 376, C['LINE'], 0.75)
+    t8(s, x, 380, 176, 18, sites + '  sites to close the gap', 10.5, 'NAVY', F_HEAD, CEN, MID)
 for k, (col, lab) in enumerate([('NAVY', 'covered'), ('MIST', 'not covered'), ('LIME', 'site')]):
-    x = X0 + k * 110
-    box(s, x, 438, 10, 10, C[col])
-    t8(s, x + 16, 435, 90, 16, lab, 10, 'STEEL', F_BODY, L, MID)
-cap(s, 576, 122, 336, 'What that buys')
-for i, (ic, t) in enumerate([('mountain', 'Reaches over ridges\nand into valleys'),
-                             ('house', 'Deep indoor: meter boxes\nand basements'),
-                             ('zap', 'Few sites, so backup\npower is affordable')]):
-    y = 146 + i * 72
-    icon(s, ic, 576, y + 6, 44, 'white', disc='NAVY')
-    t8(s, 636, y, 276, 56, t, 14, 'NAVY', F_HEAD, L, MID, line=1.15)
-box(s, 576, 368, 336, 80, C['PAPER'])
-icon(s, 'info', 576 + PAD, 384, 22, 'steel')
-t8(s, 576 + 48, 380, 270, 30, 'Not a capacity layer', 14, 'NAVY', F_HEAD, L, MID)
-t8(s, 576 + 48, 410, 270, 24, '3–5 MHz: voice, telemetry, low-rate video', 12, 'STEEL', F_BODY, L, MID)
-foot(s, '450 MHz Alliance, Brief (Jun 2022) p15 - same site grid, reference modelled at 410 MHz')
+    x = 360 + k * 100
+    box(s, x, 425, 10, 10, C[col])
+    t8(s, x + 16, 422, 80, 16, lab, 10, 'STEEL', F_BODY, L, MID)
+strip(s, 452, 'info', 'Not a capacity layer:', '3–5 MHz carries voice, telemetry and low-rate video, alongside 4G and 5G.', h=40)
+foot(s, 'NAMRIA; WorldRiskReport 2025; PAGASA; 450 MHz Alliance, Brief (Jun 2022) p15 - same site grid, reference modelled at 410 MHz')
 
 # ================================================================ P5 频段已是主流（世界地图 + 欧洲放大）
 import json
 s = newslide()
-page8(s, 5, 'B', 'Why now', 'The band is mainstream, and utilities lead the way')
+page8(s, 0, '01', 'Why now', 'The band is mainstream, and utilities lead the way')
 PRE = REPO / '06_用到的图片' / '预处理成品'
 WM = json.loads((PRE / 'worldmap_450.json').read_text(encoding='utf-8'))
 
@@ -589,9 +596,13 @@ for i, (ic, v, lab) in enumerate(TREND):
 strip(s, ty + 86, 'check', 'Same pattern everywhere:', 'one licensed operator carries it; utilities anchor most networks', h=34)
 foot(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p4, p6-p9 country updates, p11-p12; countries coloured by main use')
 
+# ================================================================ 第 2 章
+s = newslide()
+divider(s, 1)
+
 # ================================================================ P6 行业优先级
 s = newslide()
-page8(s, 6, 'C', 'Who pays first', 'Start with the utilities: they pay first and fit best')
+page8(s, 0, '02', 'Who pays first', 'Start with the utilities: they pay first and fit best')
 RANK = [('zap', 'Power', 3, 3, 3, 'Proven anchor abroad'),
         ('droplets', 'Water', 2, 3, 3, 'Same sites as power'),
         ('siren', 'Emergency', 2, 3, 2, 'Typhoon readiness'),
@@ -677,7 +688,7 @@ IND = [
 ]
 for cfg in IND:
     s = newslide()
-    page8(s, cfg['n'], 'C', 'Priority %d of 6  ·  %s' % (cfg['rank'], cfg['name']), cfg['title'])
+    page8(s, 0, '02', 'Priority %d of 6  ·  %s' % (cfg['rank'], cfg['name']), cfg['title'])
     if cfg['hero']:
         photo(s, asset(cfg['hero']), X0, 122, 384, 250, fy=cfg['fy'])
     else:   # 占位：插画，待 06_用到的图片/待替换/ 放入实拍
@@ -709,15 +720,19 @@ for cfg in IND:
         chip(s, 456 + PAD + i * 145, 446, 134, 34, t)
     foot(s, cfg['src'])
 
+# ================================================================ 第 3 章
+s = newslide()
+divider(s, 2)
+
 # ================================================================ P13 端到端架构
 s = newslide()
-page8(s, 13, 'D', 'How we deliver', 'One build serves all six industries; only terminals and apps change')
+page8(s, 0, '03', 'How it is built', 'One build serves all six industries; only terminals and apps change')
 LAY = [('smartphone', 'Terminal', 'Hytera 450M Product Introduction PPT_202609_slide9_5.png',
         [('PNC660 450M', 'handheld'), ('MNC650 450M', 'vehicle radio'),
          ('P70 5G+450M', '2026 Q4'), ('PNC660Ex', 'ATEX, 2027 Q2')]),
-       ('radio-tower', 'Network', 'iBS一体化基站_1.png',
-        [('450 MHz eNB', 'few sites'), ('Core', 'private or shared'),
-         ('Backhaul', 'fibre / MW / sat'), ('Rapid deploy', 'portable kit')]),
+       ('radio-tower', 'Network', ['E-pole100_1.png', 'iBS一体化基站_1.png'],
+        [('Fixed eNB', 'tower sites'), ('Mobile eNB', 'portable kit'),
+         ('Core', 'private or shared'), ('Backhaul', 'fibre / MW / sat')]),
        ('layers', 'Application', 'Hytera PNC660 450MHz&MCX_slide8_3.png',
         [('MCS', 'PTT · video · data'), ('Dispatch', 'voice, video, GIS'),
          ('Recording', 'playback'), ('Device mgmt', 'zero-touch')])]
@@ -728,7 +743,14 @@ for i, (ic, name, img, items) in enumerate(LAY):
     t8(s, x + 48, 122, 200, 40, name, 15, 'WHITE', F_HEAD, L, MID)
     box(s, x, 162, C3W, 222, C['CARD'])
     box(s, x + PAD, 172, C3W - 2 * PAD, 114, C['WHITE'])
-    fit(s, illu(img, 1400), x + PAD + 6, 176, C3W - 2 * PAD - 12, 106)
+    if isinstance(img, list):   # 网络层：固定站 + 移动站并排
+        for k, (im2, tag) in enumerate(zip(img, ['Fixed site', 'Mobile site'])):
+            xx = x + PAD + k * 120
+            fit(s, illu(im2, 1400), xx + 6, 176, 108, 88)
+            t8(s, xx, 266, 120, 16, tag, 9.5, 'STEEL', F_HEAD, CEN, MID)
+        ln(s, x + C3W / 2, 182, x + C3W / 2, 276, C['LINE'], 0.75)
+    else:
+        fit(s, illu(img, 1400), x + PAD + 6, 176, C3W - 2 * PAD - 12, 106)
     for j, (k, d) in enumerate(items):
         y = 294 + j * 22
         box(s, x + PAD, y + 8, 6, 6, C['LIME'])
@@ -747,7 +769,7 @@ foot(s, '450M Roadmap; HyTalk MC V6.1; 450 MHz Alliance, Equipment Report (May 2
 
 # ================================================================ P14 参考案例：3 个 450 MHz 网络 + 3 个 MCS 部署（1:1，卡片同规格）
 s = newslide()
-page8(s, 14, 'D', 'References', 'Three 450 MHz networks in service, three national MCS deployments')
+page8(s, 0, '03', 'References', 'Three 450 MHz networks in service, three national MCS deployments')
 PRE = REPO / '06_用到的图片' / '预处理成品'
 ROWS = [('radio-tower', 'green', 'GREEN', '450 MHz networks in service  ·  operator networks', 'GREEN_L', [
             ('Germany', '450connect', 'loc_germany.png', 'B72', 'national utility network', ['>95% coverage', 'PNC660 whitelisted']),
@@ -781,9 +803,13 @@ for r, (ric, icol, capcol, head, bg, cards) in enumerate(ROWS):
 t8(s, X0, 486, CW, 14, 'Top row: operator networks; Hytera’s link is the 450connect whitelist. Hong Kong and PNG photos are illustrative.', 8, 'SILVER')
 foot(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p7-p9; RFI for devices (2025) p5; 450connect whitelist; Hytera showroom briefing L170, L211; PNG case records')
 
+# ================================================================ 第 4 章
+s = newslide()
+divider(s, 3)
+
 # ================================================================ P15 商业模式
 s = newslide()
-page8(s, 15, 'D', 'Business model', 'The utility contract funds the coverage; five more lines use it')
+page8(s, 0, '04', 'Business model', 'The utility contract funds the coverage; five more lines use it')
 CHAIN = [('package', 'Hytera', 'Radio, terminals, platform', 'NAVY'),
          ('radio-tower', 'Globe Telecom', 'Spectrum, network, customers', 'GREEN'),
          ('building-2', 'Anchor customers', 'Contract capacity first', 'NAVY_L')]
@@ -812,46 +838,15 @@ for i, (ic, name, who) in enumerate(REV):
 strip(s, 458, 'info', 'Sign demand before the build:', 'Portugal’s 450 MHz trial stalled on commercial terms, not technology')
 foot(s, 'Hytera proposal; 450 MHz Alliance, Annual Global Update (Dec 2025) p9')
 
-# ================================================================ P16 试点路线图
-s = newslide()
-page8(s, 16, 'D', 'Next steps', 'Pilot first: test the case in Globe’s own terrain')
-STEPS = [('radio-tower', 'Confirm the spectrum', 'band, bandwidth'),
-         ('map-pin', 'Pick a province', 'typhoon belt'),
-         ('package', 'Build the pilot', 'sites, terminals, meters'),
-         ('activity', 'Measure', 'coverage, uptime, cost'),
-         ('trending-up', 'Decide on scale', 'national roll-out')]
-for i, (ic, t, d) in enumerate(STEPS):
-    x = X0 + i * 176
-    first = i == 0
-    box(s, x, 122, 160, 150, C['NAVY'] if first else C['CARD'])
-    icon(s, ic, x + PAD, 138, 40, 'navy' if first else 'white', disc='WHITE' if first else 'NAVY')
-    cap(s, x + 64, 138, 90, 'Step %d' % (i + 1), 'LIME' if first else 'GREEN', h=40, anchor=MID)
-    t8(s, x + PAD, 190, 132, 44, t, 14, 'WHITE' if first else 'NAVY', F_HEAD, L, TOP, line=1.1)
-    t8(s, x + PAD, 238, 132, 22, d, 11.5, 'MIST' if first else 'STEEL', F_BODY, L, MID)
-    if i < 4:
-        icon(s, 'arrow-right', x + 160, 189, 16, 'steel')
-cap(s, X0, 292, 400, 'What we need from Globe')
-NEED = [('radio-tower', 'Spectrum parameters', 'B31 or B72  ·  3 or 5 MHz'),
-        ('map-pin', 'One candidate province', 'ideally in the typhoon belt'),
-        ('handshake', 'Two introductions', 'a cooperative, a water district')]
-for i, (ic, t, d) in enumerate(NEED):
-    x = COL3[i]
-    box(s, x, 314, C3W, 96, C['GREEN_L'])
-    icon(s, ic, x + PAD, 340, 44, 'white', disc='GREEN')
-    t8(s, x + 74, 330, 186, 30, t, 14, 'NAVY', F_HEAD, L, MID)
-    t8(s, x + 74, 358, 186, 26, d, 12, 'STEEL', F_BODY, L, MID)
-strip(s, 428, 'handshake', 'Not a build.', 'The next step is a joint pilot design, in Globe’s own terrain.', 'NAVY', 44, 'LIME', 'white', 'WHITE')
-foot(s, 'Hytera proposal')
-
 # ================================================================ P17 尾页
 s = newslide()
 cover_frame(s)
 cap(s, 68, 126, 440, 'Hytera  ×  Globe Telecom')
 t8(s, 68, 150, 440, 60, 'Thank you', 40, 'NAVY', F_HEAD)
 box(s, 68, 226, 64, 4, C['LIME'])
-cap(s, 68, 254, 440, 'Next step')
-for i, (ic, t) in enumerate([('radio-tower', 'Confirm the spectrum'), ('map-pin', 'Nominate a pilot province'),
-                             ('handshake', 'Design the pilot together')]):
+cap(s, 68, 254, 440, 'For discussion')
+for i, (ic, t) in enumerate([('radio-tower', 'Band and bandwidth'), ('users', 'Which industries matter most'),
+                             ('map-pin', 'Where coverage is needed first')]):
     y = 278 + i * 44
     icon(s, ic, 68, y, 32, 'white', disc='NAVY')
     t8(s, 112, y, 380, 32, t, 15, 'NAVY', F_HEAD, L, MID)
