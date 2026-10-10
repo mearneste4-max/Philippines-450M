@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
-"""菲律宾 450MHz 方案 v6
+"""菲律宾 450MHz 方案 v7
 
-恢复初版稿的五段式骨架（Why 450MHz & Hytera → Industry solutions → E2E
-architecture → Reference cases → Business model），并回到原稿浅色配色：
-白底 + 海能达蓝标题 + 橄榄绿点缀 + 浅灰蓝卡片。
+五段式骨架（Why 450MHz & Hytera → Industry solutions → E2E architecture →
+Reference cases → Business model），浅色配色：白底 + 海能达蓝标题 + 橄榄绿点缀
++ 浅灰蓝卡片。
 
-用法：python build_ph450m_v6.py <模板.pptx> <输出.pptx>
+用法：python build_ph450m_v7.py [模板.pptx] [输出.pptx]
+  模板缺省为 01_交付物/菲律宾450M方案_v7.pptx（脚本会清空它的全部页面，只复用
+  母版、版式与 notesMaster）；输出缺省为原地覆盖模板文件（旧版本靠 git 追溯）。
+  素材优先在仓库内查找（05_素材库、06_用到的图片、03_生成脚本/素材），找不到再查
+  F 盘 Workspace 下的原始路径，因此仓库可独立重建。
 """
 import copy
 import hashlib
@@ -20,10 +24,12 @@ from pptx.enum.text import PP_ALIGN as A
 from pptx.oxml.ns import qn
 from pptx.util import Pt
 
-TPL, OUT = sys.argv[1], sys.argv[2]
 HERE = Path(__file__).resolve().parent
+REPO = HERE.parent
+TPL = sys.argv[1] if len(sys.argv) > 1 else str(REPO / '01_交付物' / '菲律宾450M方案_v7.pptx')
+OUT = sys.argv[2] if len(sys.argv) > 2 else TPL   # 缺省原地重建（模板已整体读入内存）
 G = HERE / '素材'
-SUB = Path(r'F:\Workspace\01_projects\2026-10_菲律宾450M方案\sublogos')
+(G / '_hi').mkdir(parents=True, exist_ok=True)   # 预处理缓存，不入库
 
 # ---------------------------------------------------------------- 设计令牌
 C = {
@@ -40,7 +46,9 @@ EN = 'Arial'
 L, CEN, R = A.LEFT, A.CENTER, A.RIGHT
 TOP, MID = ANCHOR.TOP, ANCHOR.MIDDLE
 
-ROOTS = [G / n for n in ('_orig', '_case', '_mcs', '_prod', '_cut', '_hi', '_ex', 'images')]
+# 仓库内素材排在最前，保证同名文件优先取仓库版本
+ROOTS = [G / '_recovered', REPO / '06_用到的图片', REPO / '05_素材库']
+ROOTS += [G / n for n in ('_orig', '_case', '_mcs', '_prod', '_cut', '_hi', '_ex', 'images')]
 ROOTS += [G / '_casepool' / n / 'images' for n in
           ('PNG', 'ICCS', 'HYTALK', 'MCX', 'TETRA2', 'SDP', 'MBB', 'RAN', 'QOS')]
 ROOTS += [Path(r'F:\Workspace\03_sources\references\2026-10_资源中心图库\Approved_可公开使用'),
@@ -113,10 +121,14 @@ def illu(name, maxw=1200):
 
 
 def enhance(name, src, minw=1500):
+    """放大 + 锐化。src 可传文件名（延迟解析）：仓库里已有同名成品时直接用成品，
+    原始素材不在本机也能重建。"""
     from PIL import Image, ImageFilter
     out = G / '_hi' / name
+    if not out.exists() and name in _IX:
+        return _IX[name]
     if not out.exists():
-        im = Image.open(src).convert('RGB')
+        im = Image.open(asset(src) if isinstance(src, str) else src).convert('RGB')
         if im.width < minw:
             im = im.resize((minw, int(im.height * minw / im.width)), Image.LANCZOS)
         im.filter(ImageFilter.UnsharpMask(radius=2, percent=110, threshold=3)).save(out)
@@ -294,8 +306,8 @@ fit(s, illu('hytera_logo.png', 900), X1 - 148, 30, 110, 44)
 tx(s, X0 + 20, 108, 460, 18, 'HYTERA  \u00d7  GLOBE TELECOM', 10.5, True, 'GREEN')
 tx(s, X0 + 20, 138, 470, 120, '450 MHz Mission-Critical\nNetwork for the\nPhilippines',
    34, True, 'NAVY', line=1.14)
-box(s, X0 + 20, 274, 72, 4, C['LIME'])
-tx(s, X0 + 20, 300, 440, 60,
+box(s, X0 + 20, 296, 72, 4, C['LIME'])
+tx(s, X0 + 20, 316, 440, 60,
    'A coverage and resilience layer for utilities,\npublic safety, transport and remote communities.',
    12.5, False, 'STEEL', line=1.42)
 
@@ -320,21 +332,21 @@ tx(s, X0 + 202, 154, 166, 70, '7,641 islands.\nOne grid has to reach\nacross all
 box(s, X0 + 186, 248, 196, 78, C['WHITE'])
 fit(s, illu('\u5c71\u8109\u7ebf\u7a3f.png'), X0 + 194, 256, 180, 56)
 fit(s, illu('\u901a\u4fe1\u94c1\u5854_3.png'), X0 + 316, 258, 34, 62)
-box(s, X0 + 186, 338, 196, 62, C['CARD'])
-tx(s, X0 + 200, 348, 168, 44,
+box(s, X0 + 186, 334, 196, 72, C['CARD'])
+tx(s, X0 + 200, 344, 168, 56,
    'Mountains, storm landfall and\n2,000 km of sea between\nthe islands.',
    9.5, False, 'STEEL', line=1.35)
 STATS = [('7,641', 'islands, much of the terrain mountainous', 'NAVY'),
          ('#1', 'WorldRiskIndex 2025 - highest disaster risk', 'GREEN'),
          ('~20', 'tropical cyclones enter PAR every year', 'NAVY'),
-         ('1.4M', 'households lost power in Typhoon Tino', 'GREEN')]
+         ('1.4M', 'electricity consumers without power after Typhoon Tino (Nov 2025)', 'GREEN')]
 for i2, (v, lab, ac) in enumerate(STATS):
     r, c = divmod(i2, 2)
     stat(s, 480 + c * 220, 122 + r * 152, 208, 140, v, lab, ac, 24)
 concl(s, [('450 MHz is the layer that stays up.  ', True, 'WHITE'),
           ('Coverage and resilience, not capacity - alongside Globe\u2019s 4G and 5G, not instead of them.',
            False, 'MIST')])
-src(s, 'WorldRiskReport 2025; PAGASA; Philippine Statistics Authority')
+src(s, 'WorldRiskReport 2025; PAGASA; NAMRIA; Department of Energy, Typhoon Tino power situation (5 Nov 2025)')
 
 # ================================================================ 03 目录
 s = newslide()
@@ -346,7 +358,7 @@ AG = [('01', 'Why 450 MHz & Hytera', 'Global trend, the band itself, and what MC
        'thumb_industries.png', 'P7 \u2013 P13'),
       ('03', 'End-to-end architecture', 'Terminal \u00b7 Network \u00b7 Application',
        'thumb_architecture.png', 'P14'),
-      ('04', 'Reference cases', 'Global 450 MHz networks, and four customer cases',
+      ('04', 'Reference cases', 'Global 450 MHz networks, and three customer cases',
        'thumb_cases.png', 'P15 \u2013 P18'),
       ('05', 'Business model', 'Who does what, six revenue streams, next steps',
        'thumb_model.png', 'P19 \u2013 P21')]
@@ -368,7 +380,7 @@ s = newslide()
 page(s, 4, 'Global trend', 'From a niche band to critical infrastructure',
      'Regulators, utilities and public safety agencies have settled on what this band is for.')
 TREND = [('86%', 'of the world\u2019s population lives in countries where the 400 MHz bands are allocated or under consultation', 'NAVY'),
-         ('39', 'countries have already deployed networks in these bands, out of 77 with allocations at 380 / 410 / 450 MHz', 'GREEN'),
+         ('77 / 39', 'countries with networks deployed at 380 / 410 / 450 MHz - and the 39 of them already running LTE', 'GREEN'),
          ('1.8M / 14M', 'broadband and sensor connections forecast by 2030, from 420k and 1.2M in 2026', 'NAVY')]
 for i, (v, lab, ac) in enumerate(TREND):
     stat(s, X0, 122 + i * 86, 470, 78, v, lab, ac, 21)
@@ -388,13 +400,13 @@ for i, (t, d) in enumerate(POS):
 concl(s, [('The band is no longer experimental.  ', True, 'WHITE'),
           ('It is assigned, standardised in 3GPP, and carrying utility and public-safety traffic today.',
            False, 'MIST')])
-src(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p4, p11, p12; Annual Equipment Report (May 2025) p5')
+src(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p4, p11 Table 1, p12 Table 6; Annual Equipment Report (May 2025) p5')
 
 # ================================================================ 05 物理层面
 s = newslide()
 page(s, 5, 'Why 450 MHz', 'One site replaces several mid-band sites',
      'Low-band physics is the whole argument. The numbers below reuse one grid at three frequencies.')
-DATA = [('450 MHz', '1 site  \u00b7  100% covered', [(0, 0)], 62),
+DATA = [('410 / 450 MHz', '1\u00d7 sites  \u00b7  100% covered', [(0, 0)], 62),
         ('740 MHz', '2.5-3\u00d7 sites  \u00b7  91.3% from the same grid',
          [(-36, -16), (36, -16), (0, 28)], 34),
         ('2350 MHz', '12-15\u00d7 sites  \u00b7  58.7% from the same grid',
@@ -425,12 +437,12 @@ bullets(s, 560, 148, 352, [
 concl(s, [('What it is not:  ', True, 'WHITE'),
           ('with 3-5 MHz it carries voice, low-rate video and telemetry. It stays outside the capacity game.',
            False, 'MIST')])
-src(s, '450 MHz Alliance, Brief (Jun 2022) p15')
+src(s, '450 MHz Alliance, Brief (Jun 2022) p15 - reference grid modelled at 410 MHz')
 
 # ================================================================ 06 MCS
 s = newslide()
 page(s, 6, 'The service layer', 'What MCS means - and how it sits on the band',
-     'Every case in this deck runs MCS. This page explains what it is, because the term carries the delivery.')
+     'The customer cases in section 04 run MCS. This page explains what it is, because the term carries the delivery.')
 box(s, X0, 122, 430, 200, C['CARD'])
 tx(s, X0 + 18, 136, 394, 18, '3GPP mission-critical services (MCS / MCX)', 12, True, 'NAVY')
 MCS = [('\u7ebf\u7a3f_\u624b\u53f0_2.png', 'MCPTT', 'push-to-talk voice, with priority and pre-emption'),
@@ -462,7 +474,7 @@ tx(s, 528, 336, 366, 38,
    'In this deck: the band carries the traffic, MCS provides the service.',
    10, True, 'GREEN', L, MID)
 concl(s, [('450 MHz gives the coverage; MCS gives the service.  ', True, 'WHITE'),
-          ('The two are specified together, and the cases that follow run both.', False, 'MIST')])
+          ('MCS runs on any 3GPP LTE or 5G radio, so it carries over to a 450 MHz layer unchanged.', False, 'MIST')])
 src(s, '3GPP mission-critical services; Hytera HyTalk MC platform documentation')
 
 # ================================================================ 07 六行业总览
@@ -501,34 +513,34 @@ IND_PAGES = [
               'A private data channel for SCADA, feeder automation and substation control',
               'Smart meters on the same sites, with deep indoor coverage'],
          ph='In the Philippines: 121 electric cooperatives under NEA.',
-         srcn='450 MHz Alliance (Dec 2025); NEA; Hytera power industry solutions'),
+         srcn='National Electrification Administration; Hytera power industry solutions'),
     dict(n=9, kicker='Industry 2 of 6  \u00b7  Water', title='Water: locate the losses instead of estimating them',
          point='Non-revenue water is usually estimated, not located. Pump, well and reservoir sites sit exactly where mid-band cannot reach.',
-         hero=enhance('water_pumps.png', asset('\u83f2\u5f8b\u5bbe\u89e3\u51b3\u65b9\u6848\u5305\u88c5_slide7_5.jpg')), fy=0.5,
+         hero=enhance('water_pumps.png', '\u83f2\u5f8b\u5bbe\u89e3\u51b3\u65b9\u6848\u5305\u88c5_slide7_5.jpg'), fy=0.5,
          accent=asset('\u83f2\u5f8b\u5bbe\u89e3\u51b3\u65b9\u6848\u5305\u88c5_slide5_3.jpg'),
          cap='Reservoir and pumping assets. Illustrative imagery.',
          pain='Most water districts know their losses as a percentage, not as an address - because the meters and pressure sensors cannot report.',
          sol=['Meters and pressure sensors that locate losses instead of estimating them',
               'Pump, well and reservoir telemetry from remote and underground sites',
               'Backup-powered sites keep alarms flowing when the public network is down'],
-         ph='In the Philippines: 149 water districts under LWUA.',
-         srcn='450 MHz Alliance (Dec 2025); LWUA; Hytera water industry solutions'),
+         ph='In the Philippines: only 149 of 532 water districts kept losses within LWUA\u2019s 20% limit (2025).',
+         srcn='LWUA non-revenue water data, end-2025 (reported Aug 2026); Hytera water industry solutions'),
     dict(n=10, kicker='Industry 3 of 6  \u00b7  Police', title='Police: one group call across the agencies',
          point='The requirement is not another private network. It is interoperability between the agencies that already have one.',
          hero=asset('20241104_\u8d44\u6e90\u4e2d\u5fc3_ICC\u65b9\u6848_\u573a\u666f\u7248_V2_slide10_1.png'), fy=0.42,
          accent=asset('P60_Snow_Public safety.jpg'),
-         cap='A district police station. Illustrative imagery.',
+         cap='Police on traffic duty, and a handheld in the field. Illustrative imagery.',
          pain='Different agencies cannot talk to each other, and the public network congests exactly at the moment it is needed most.',
          sol=['One group call across police, fire and civil defence',
               'Live video from the scene, with priority and pre-emption when the network congests',
               'Interworking with the DMR and TETRA networks already in service'],
          ph='Reference: Singapore has assigned 450 MHz band 31 to public safety, in service.',
-         srcn='450 MHz Alliance, Annual Global Update p8; Hytera public-safety references'),
+         srcn='450 MHz Alliance, Annual Global Update (Dec 2025) p8; Hytera public-safety references'),
     dict(n=11, kicker='Industry 4 of 6  \u00b7  Emergency', title='Emergency: coverage that survives the storm',
          point='After a typhoon the public network fails exactly where the response is needed. This is the layer that has to survive.',
          hero=asset('China Yunnan Fire Rescue_Flood Rescue Operation_Girls and Cat_1.jpg'), fy=0.42,
          accent=asset('Epack200_Snow.jpg'),
-         cap='Fire, flooding and road clearance. Illustrative imagery.',
+         cap='Flood rescue, and a portable base station in the field. Illustrative imagery.',
          pain='Rapid response needs communications within hours, not days - and it needs them where there is no grid and no backhaul.',
          sol=['Portable base stations and satellite backhaul deployed within hours',
               'A field command post that reaches the provincial EOC and the national agency',
@@ -537,9 +549,9 @@ IND_PAGES = [
          srcn='Hytera emergency and rapid-deployment product documentation'),
     dict(n=12, kicker='Industry 5 of 6  \u00b7  Rail', title='Rail: continuous coverage along a narrow corridor',
          point='A rail corridor is a narrow strip, often in cuttings. It is one of the two shapes mid-band handles worst.',
-         hero=enhance('v6_metro.png', asset('20260920_\u4ea7\u54c1\u6587\u6863_TETRA\u65b9\u6848\u4ecb\u7ecd_\u8bfe\u4ef6_\u82f1\u6587_slide41_3.png')), fy=0.45,
+         hero=enhance('v6_metro.png', '20260920_\u4ea7\u54c1\u6587\u6863_TETRA\u65b9\u6848\u4ecb\u7ecd_\u8bfe\u4ef6_\u82f1\u6587_slide41_3.png'), fy=0.45,
          accent=asset('PNC660_Snow_Train.jpg'),
-         cap='An interchange and a tunnel section. Illustrative imagery.',
+         cap='An elevated rail line, and a handheld on board. Illustrative imagery.',
          pain='Coverage has to follow the track, not the population - so a network built for towns leaves the corridor uncovered.',
          sol=['Continuous coverage along the corridor, including cuttings and tunnels',
               'Train-to-ground voice, data and video for operations and security',
@@ -550,7 +562,7 @@ IND_PAGES = [
          point='Ports are dense and metallic, and coast guard patrols run far beyond mid-band reach. One network covers both.',
          hero=asset('case_hzmb_bridge.jpg'), fy=0.5,
          accent=asset('sea_boat.png'),
-         cap='A coastal terminal and a container command post. Illustrative imagery.',
+         cap='A sea crossing, and a rescue boat. Illustrative imagery.',
          pain='Quay operations, ship-to-shore traffic and patrol boats all need the same group call, across water and steel.',
          sol=['Port and terminal dispatch on one group call across the quay',
               'Ship-to-shore voice and data from coastal sites',
@@ -644,7 +656,7 @@ OPS = [('Germany', '450connect', 'Band 72, nationwide utility network; more than
        ('Austria', 'ArgoNET', 'Band 72; regional CDMA and LTE networks for utilities'),
        ('Poland', 'PGE / Polkomtel', 'Band 31 and band 87; smart grid and field services'),
        ('Malaysia', 'TNB', 'Band 31; procurement for initial deployment in four regions'),
-       ('Indonesia', 'SeaTelSat', 'Rural connectivity and utility projects'),
+       ('Indonesia', 'SeaTelSat', 'Band 31; rural LTE over satellite backhaul, and a private LTE network for MCX'),
        ('South Africa', 'Transnet', 'Band 31 allocated for rail, with wider use under discussion'),
        ('Singapore', 'Public safety', 'Band 31 allocated for public safety, in service')]
 for i2, (c, op, d) in enumerate(OPS):
@@ -665,16 +677,16 @@ CASES = [
          img=asset('Hytera PNC660 450MHz&MCX_slide13_1.jpg'), fy=0.5,
          cap='Sri Lanka Railways - the customer\u2019s own network, photographed on site.',
          stats=[('1,950+', 'MCS terminals delivered across the island network'),
-                ('9 / 403', 'lines and stations covered, in three provinces'),
+                ('9 / 403', 'railway lines and stations covered'),
                 ('450 MHz', 'the operator, Dialog, holds Sri Lanka\u2019s 450 MHz licence')],
          metrics=[('\u221210%', 'train delays'), ('\u221260%', 'management cost'),
                   ('\u221240%', 'track repair time'), ('30 min', 'landslide response')],
          srcn='Hytera showroom briefing (SRC-0134/0135) L211; Hytera PNC660 450MHz&MCX case records; '
-              '450 MHz Alliance, Annual Global Update p8 (Dialog holds the 450 MHz licence in Sri Lanka)'),
+              '450 MHz Alliance, Annual Global Update (Dec 2025) p8'),
     dict(n=17, kicker='Case 2 of 3  \u00b7  Railway MCX over 5G',
          title='Hong Kong Light Rail: the first MCS over 5G',
          point='The world\u2019s first railway MCS over 5G - replacing TETRA rather than overlaying it.',
-         img=enhance('v6_dispatch.png', asset('20260917_\u4ea7\u54c1\u6587\u6863_SmartDispatchPlus\u4ea7\u54c1\u4ecb\u7ecd_\u8bfe\u4ef6_\u82f1\u6587_slide5_6.png')),
+         img=enhance('v6_dispatch.png', '20260917_\u4ea7\u54c1\u6587\u6863_SmartDispatchPlus\u4ea7\u54c1\u4ecb\u7ecd_\u8bfe\u4ef6_\u82f1\u6587_slide5_6.png'),
          fy=0.5,
          cap='Illustrative operations imagery; the customer\u2019s own site photography is not cleared for external use.',
          stats=[('810', 'terminals: 511 handheld, 152 bus-mounted and 147 vehicle'),
@@ -752,10 +764,10 @@ for i, (ic, t, d) in enumerate(COST):
 box(s, X0, 392, CW, 44, C['PAPER'])
 box(s, X0, 392, 3.5, 44, C['GREEN'])
 rich(s, X0 + 18, 392, CW - 36, 44,
-     [('The Alliance\u2019s own assessment:  ', True, 'NAVY'),
-      ('the main risk in this band is commercial uptake, not deployment - which is why the sequencing matters more than the technology.',
+     [('A lesson from the Alliance\u2019s country reports:  ', True, 'NAVY'),
+      ('Portugal\u2019s 450 MHz trial stalled on commercial terms, not on the technology - so the sequencing matters most.',
        False, 'STEEL')], 11, anchor=MID)
-src(s, '450 MHz Alliance, Annual Global Update (Dec 2025); Hytera proposal')
+src(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p9 (Portugal: trial network, licence award pending on commercial terms); Hytera proposal')
 
 # ================================================================ 20 收入
 s = newslide()
