@@ -730,7 +730,7 @@ page8(s, 0, '03', 'How it is built', 'One build serves all six industries; only 
 LAY = [('smartphone', 'Terminal', 'Hytera 450M Product Introduction PPT_202609_slide9_5.png',
         [('PNC660 450M', 'handheld'), ('MNC650 450M', 'vehicle radio'),
          ('P70 5G+450M', '2026 Q4'), ('PNC660Ex', 'ATEX, 2027 Q2')]),
-       ('radio-tower', 'Network', ['E-pole100_1.png', 'iBS一体化基站_1.png'],
+       ('radio-tower', 'Network', ['通信铁塔_3.png', 'iBS一体化基站_1.png'],
         [('Fixed eNB', 'tower sites'), ('Mobile eNB', 'portable kit'),
          ('Core', 'private or shared'), ('Backhaul', 'fibre / MW / sat')]),
        ('layers', 'Application', 'Hytera PNC660 450MHz&MCX_slide8_3.png',
@@ -744,7 +744,7 @@ for i, (ic, name, img, items) in enumerate(LAY):
     box(s, x, 162, C3W, 222, C['CARD'])
     box(s, x + PAD, 172, C3W - 2 * PAD, 114, C['WHITE'])
     if isinstance(img, list):   # 网络层：固定站 + 移动站并排
-        for k, (im2, tag) in enumerate(zip(img, ['Fixed site', 'Mobile site'])):
+        for k, (im2, tag) in enumerate(zip(img, ['Fixed tower site', 'Mobile site'])):
             xx = x + PAD + k * 120
             fit(s, illu(im2, 1400), xx + 6, 176, 108, 88)
             t8(s, xx, 266, 120, 16, tag, 9.5, 'STEEL', F_HEAD, CEN, MID)
