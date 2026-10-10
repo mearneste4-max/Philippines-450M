@@ -731,8 +731,8 @@ LAY = [('smartphone', 'Terminal', 'Hytera 450M Product Introduction PPT_202609_s
         [('PNC660 450M', 'handheld'), ('MNC650 450M', 'vehicle radio'),
          ('P70 5G+450M', '2026 Q4'), ('PNC660Ex', 'ATEX, 2027 Q2')]),
        ('radio-tower', 'Network', [pick('tower_site', str(REPO / '06_用到的图片' / '预处理成品' / 'tower_enb.png')), 'iBS一体化基站_1.png'],
-        [('Fixed eNB', 'tower sites'), ('Mobile eNB', 'portable kit'),
-         ('Core', 'private or shared'), ('Backhaul', 'fibre / MW / sat')]),
+        [('RRU5800M', 'Band 31, on tower'), ('BBU5801M', 'baseband, CPRI'),
+         ('iBS3800', 'mobile, Band 31'), ('Core', 'private or shared')]),
        ('layers', 'Application', 'Hytera PNC660 450MHz&MCX_slide8_3.png',
         [('MCS', 'PTT · video · data'), ('Dispatch', 'voice, video, GIS'),
          ('Recording', 'playback'), ('Device mgmt', 'zero-touch')])]
@@ -744,11 +744,11 @@ for i, (ic, name, img, items) in enumerate(LAY):
     box(s, x, 162, C3W, 222, C['CARD'])
     box(s, x + PAD, 172, C3W - 2 * PAD, 114, C['WHITE'])
     if isinstance(img, list):   # 网络层：固定站 + 移动站并排
-        for k, (im2, tag) in enumerate(zip(img, ['Fixed tower site', 'Mobile site'])):
-            xx = x + PAD + k * 120
-            fit(s, illu(im2, 1400), xx + 6, 176, 108, 88)
-            t8(s, xx, 266, 120, 16, tag, 9.5, 'STEEL', F_HEAD, CEN, MID)
-        ln(s, x + C3W / 2, 182, x + C3W / 2, 276, C['LINE'], 0.75)
+        # 固定站（塔上 RRU5800M + 塔下 BBU5801M）占大框，移动站 iBS3800 占小框
+        for (im2, tag, xx, ww) in zip(img, ['Fixed site', 'Mobile site'], [x + PAD, x + PAD + 162], [156, 78]):
+            fit(s, illu(im2, 1400), xx + 3, 176, ww - 6, 88)
+            t8(s, xx, 266, ww, 16, tag, 9.5, 'STEEL', F_HEAD, CEN, MID)
+        ln(s, x + PAD + 159, 182, x + PAD + 159, 276, C['LINE'], 0.75)
     else:
         fit(s, illu(img, 1400), x + PAD + 6, 176, C3W - 2 * PAD - 12, 106)
     for j, (k, d) in enumerate(items):
@@ -765,7 +765,7 @@ for j, (ic, k, v, bg, col) in enumerate([
     box(s, x, 400, 420, 96, C[bg])
     icap(s, ic, x + PAD, 414, k, col, 'GREEN' if col == 'green' else 'NAVY')
     t8(s, x + PAD, 446, 388, 40, v, 12.5, 'INK', F_BODY, L, TOP, line=1.2)
-foot(s, '450M Roadmap; HyTalk MC V6.1; 450 MHz Alliance, Equipment Report (May 2025) p5; 450connect whitelist certificate')
+foot(s, '450M Roadmap; RRU5800M Product Description V3.5.01 \u00a76.5; iBS3800 Product Description V3.0; MNC650 EU DoC (B31/B72); HyTalk MC V6.1; Alliance Equipment Report (May 2025) p5')
 
 # ================================================================ 生态与兼容性（王总意见：体现 450 生态成员身份 + 与主流厂商核心网兼容）
 s = newslide()
@@ -840,7 +840,7 @@ for r, (ric, icol, capcol, head, bg, cards) in enumerate(ROWS):
             yy = y + 106 + k * 20
             icon(s, 'check', tx0, yy + 4, 12, 'green')
             t8(s, tx0 + 18, yy, tw - 18, 20, f, 10.5, 'INK', F_BODY, L, MID)
-t8(s, X0, 486, CW, 14, 'Top row: operator networks; Hytera’s link is the 450connect whitelist. Hong Kong and PNG photos are illustrative.', 8, 'SILVER')
+t8(s, X0, 486, CW, 14, 'Top row: operator networks; Hytera’s link is the 450connect whitelist. PNG photo is illustrative.', 8, 'SILVER')
 foot(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p7-p9; RFI for devices (2025) p5; 450connect whitelist; Hytera showroom briefing L170, L211; PNG case records')
 
 # ================================================================ 第 4 章
