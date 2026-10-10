@@ -506,8 +506,8 @@ PANELS = [('410 / 450 MHz', 0.0, '100%', '1×'),
           ('740 MHz', 0.087, '91%', '2.5–3×'),
           ('2350 MHz', 0.413, '59%', '12–15×')]
 cap(s, X0, 122, 300, 'What the Philippines needs')
-NEEDS = [('waves', 'Reach far', '7,641 islands', 'One site where mid-band needs 2.5–15'),
-         ('mountain', 'Cross rugged terrain', 'Mostly mountainous islands', 'Bends over ridges and into valleys'),
+NEEDS = [('waves', 'Reach far', '7,641 islands', 'One site where mid-band needs 2.5–15×'),
+         ('mountain', 'Cross rugged terrain', 'Mountainous island interiors', 'Bends over ridges and into valleys'),
          ('tornado', 'Survive the storm', '#1 WorldRiskIndex  ·  ~20 cyclones a year', 'Few sites, so backup power is affordable')]
 for i, (ic, head, fact, ans) in enumerate(NEEDS):
     y = 144 + i * 92
@@ -526,7 +526,7 @@ for i, (f, unc, pct, sites) in enumerate(PANELS):
     t8(s, x, 322, 176, 36, pct, 28, 'NAVY' if i else 'GREEN', F_NUM, CEN, MID)
     t8(s, x, 356, 176, 14, 'covered', 10.5, 'STEEL', F_BODY, CEN, MID)
     ln(s, x + 30, 376, x + 146, 376, C['LINE'], 0.75)
-    t8(s, x, 380, 176, 18, sites + '  sites to close the gap', 10.5, 'NAVY', F_HEAD, CEN, MID)
+    t8(s, x, 380, 176, 18, 'Baseline site grid' if i == 0 else sites + '  sites to close the gap', 10.5, 'NAVY', F_HEAD, CEN, MID)
 for k, (col, lab) in enumerate([('NAVY', 'covered'), ('MIST', 'not covered'), ('LIME', 'site')]):
     x = 360 + k * 100
     box(s, x, 425, 10, 10, C[col])
@@ -574,7 +574,7 @@ for n, (lo, la) in WM['labels_eu'].items():
     label(s, *geo(ES, EX, EY, EW, lo, la), n)
 cap(s, EX + 8, EY + 6, 120, 'Europe', 'STEEL', 8)
 # 图例（一行）
-LEG = [('0B308E', 'Utilities', 'utility'), ('7F9B00', 'Public safety', 'safety'), ('8CC63F', 'Rail', 'rail'),
+LEG = [('0B308E', 'Utilities & industry', 'utility'), ('7F9B00', 'Public safety', 'safety'), ('8CC63F', 'Rail', 'rail'),
        ('5B86C5', 'Operator', 'broadband'), ('C3D2EA', 'Trial / consultation', 'consult')]
 lx = X0
 for col, lab, k in LEG:
@@ -583,7 +583,7 @@ for col, lab, k in LEG:
     t8(s, lx + 16, EY + EH + 9, 150, 20, txt, 10.5, 'INK', F_BODY, L, MID)
     lx += 16 + len(txt) * 5.6 + 22
 # 统计（三栏）
-TREND = [('globe', '86%', 'of the world: allocated\nor in consultation'),
+TREND = [('globe', '86%', 'of people: allocated\nor in consultation'),
          ('radio-tower', '77 / 39', 'countries with networks /\nalready on LTE'),
          ('trending-up', '14M', 'sensor links by 2030,\nplus 1.8M broadband')]
 ty = EY + EH + 40
@@ -593,7 +593,7 @@ for i, (ic, v, lab) in enumerate(TREND):
     icon(s, ic, x + PAD, ty + 18, 36, 'white', disc='NAVY')
     t8(s, x + 62, ty, 90, 72, v, 24, 'NAVY', F_NUM, L, MID)
     t8(s, x + 150, ty, 116, 72, lab, 10.5, 'STEEL', F_BODY, L, MID, line=1.15)
-strip(s, ty + 86, 'check', 'Same pattern everywhere:', 'one licensed operator carries it; utilities anchor most networks', h=34)
+strip(s, ty + 86, 'check', 'The common pattern:', 'one licensed operator per country; utilities are the largest user group', h=34)
 foot(s, '450 MHz Alliance, Annual Global Update (Dec 2025) p4, p6-p9 country updates, p11-p12; countries coloured by main use')
 
 # ================================================================ 第 2 章
@@ -626,7 +626,7 @@ for i, (ic, name, pay, fit_, speed, key) in enumerate(RANK):
     t8(s, 704, y, 200, 44, key, 12, 'INK', F_BODY, L, MID)
 icon(s, 'check', X0, 464, 16, 'green')
 t8(s, X0 + 24, 460, 600, 24, 'Green rows: the anchor customers', 11, 'GREEN', F_HEAD, L, MID)
-t8(s, X0 + 24, 480, 700, 18, 'Our reading, to be tested in the pilot', 11, 'STEEL', F_BODY, L, MID)
+t8(s, X0 + 24, 480, 700, 18, 'Our reading, to be tested with Globe', 11, 'STEEL', F_BODY, L, MID)
 foot(s, 'Hytera assessment; 450 MHz Alliance, Annual Global Update (Dec 2025) p8-p9; LWUA NRW data (2025)')
 
 # ================================================================ P7–P12 六个行业页（同一模板，篇幅一致）
@@ -769,15 +769,15 @@ foot(s, '450M Roadmap; HyTalk MC V6.1; 450 MHz Alliance, Equipment Report (May 2
 
 # ================================================================ P14 参考案例：3 个 450 MHz 网络 + 3 个 MCS 部署（1:1，卡片同规格）
 s = newslide()
-page8(s, 0, '03', 'References', 'Three 450 MHz networks in service, three national MCS deployments')
+page8(s, 0, '03', 'References', 'Three 450 MHz networks, three national mission-critical deployments')
 PRE = REPO / '06_用到的图片' / '预处理成品'
-ROWS = [('radio-tower', 'green', 'GREEN', '450 MHz networks in service  ·  operator networks', 'GREEN_L', [
+ROWS = [('radio-tower', 'green', 'GREEN', '450 MHz networks  ·  operator networks', 'GREEN_L', [
             ('Germany', '450connect', 'loc_germany.png', 'B72', 'national utility network', ['>95% coverage', 'PNC660 whitelisted']),
             ('Malaysia', 'TNB', 'loc_malaysia.png', 'B31', 'utility network', ['Phase 1: 4 areas', 'Phase 2 tendering']),
             ('Singapore', 'Public safety', 'loc_singapore.png', 'B31', 'public safety network', ['In service', 'Same band as PH'])]),
-        ('layers', 'navy', 'NAVY', 'Hytera MCS at national scale  ·  on LTE and 5G', 'CARD', [
+        ('layers', 'navy', 'NAVY', 'Hytera mission-critical deployments at national scale', 'CARD', [
             ('Sri Lanka', 'Railways', 'Hytera PNC660 450MHz&MCX_slide13_1.jpg', '1,950+', 'MCS terminals', ['9 lines, 403 stations', 'Dialog: 450 licence']),
-            ('Hong Kong', 'Light Rail', pick('hk_lightrail', 'PNC660_Snow_Train.jpg'), '810', 'MCS terminals', ['First MCS on 5G', 'Replaced TETRA']),
+            ('Hong Kong', 'Light Rail', pick('hk_lightrail', 'PNC660_Snow_Train.jpg'), '810', 'MCS terminals', ['1st railway MCS on 5G', 'Replaced TETRA']),
             ('Papua New Guinea', 'Police HQ', '20260903_海本二部培训_HyTalk与HyTalk-Pro方案_课件_20260905_slide59_3.jpg', '3,000', 'officers served', ['APEC security', '60 s dispatch'])])]
 IMW, CH = 104, 150
 for r, (ric, icol, capcol, head, bg, cards) in enumerate(ROWS):
@@ -809,7 +809,7 @@ divider(s, 3)
 
 # ================================================================ P15 商业模式
 s = newslide()
-page8(s, 0, '04', 'Business model', 'The utility contract funds the coverage; five more lines use it')
+page8(s, 0, '04', 'Business model', 'Utilities fund the coverage; every other industry builds on it')
 CHAIN = [('package', 'Hytera', 'Radio, terminals, platform', 'NAVY'),
          ('radio-tower', 'Globe Telecom', 'Spectrum, network, customers', 'GREEN'),
          ('building-2', 'Anchor customers', 'Contract capacity first', 'NAVY_L')]
