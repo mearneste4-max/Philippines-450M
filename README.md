@@ -19,6 +19,7 @@ python 03_生成脚本/render_preview.py 01_交付物/菲律宾450M方案_v8.ppt
 ```
 
 - 图标与地图是预生成的，构建不依赖它们的生成脚本：`make_icons.py`（Lucide 图标，需 cairosvg）、`make_worldmap.py`（P5 世界地图与 P14 定位图，需 geopandas 0.14.4 + matplotlib）
+- **发版命名**：`Hytera_Globe_450MHz_Application_Scenarios_Draft_<YYYYMMDD>_v<N>.pptx`（内部版，含备注）与同名 `_External.pptx`（对外版）；版本号全局递增。构建 + 灌备注后运行 `python 03_生成脚本/release.py` 自动生成到 `01_交付物/releases/`
 - 待替换图片位（港口实拍、香港轻铁实拍）：见 `06_用到的图片/待替换/README.md`
 
 ---
