@@ -455,7 +455,7 @@ page8(s, 0, '', 'Agenda', 'Four questions for today\u2019s discussion')
 for i, (num, ic, title, q) in enumerate(CHAPTERS):
     x = X0 + i * 222
     box(s, x, 124, 198, 300, C['CARD'])
-    box(s, x, 124, 198, 4, C['NAVY'] if i < 3 else C['GREEN'])
+    box(s, x, 124, 198, 4, C['NAVY'])
     numicon(s, ic, num, x + PAD, 148, 56)
     cap(s, x + PAD, 222, 160, 'Chapter %s' % num, 'GREEN')
     t8(s, x + PAD, 240, 168, 50, title, 17, 'NAVY', F_HEAD, L, TOP, line=1.1)
