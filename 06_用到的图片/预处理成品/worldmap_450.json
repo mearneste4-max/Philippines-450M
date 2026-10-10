@@ -1,0 +1,179 @@
+{
+ "main": {
+  "lon": [
+   -170,
+   180
+  ],
+  "lat": [
+   -45,
+   72
+  ],
+  "w_in": 12
+ },
+ "eu": {
+  "lon": [
+   -12,
+   33
+  ],
+  "lat": [
+   35,
+   71
+  ],
+  "w_in": 5
+ },
+ "ph": [
+  122.0,
+  12.5
+ ],
+ "counts": {
+  "utility": 14,
+  "safety": 8,
+  "rail": 1,
+  "broadband": 12,
+  "consult": 17
+ },
+ "labels_main": {
+  "Russia": [
+   95,
+   62
+  ],
+  "China": [
+   103,
+   34
+  ],
+  "Mexico": [
+   -103,
+   23
+  ],
+  "Brazil": [
+   -51,
+   -10
+  ],
+  "Suriname": [
+   -48,
+   7
+  ],
+  "Argentina": [
+   -66,
+   -36
+  ],
+  "Tunisia": [
+   10,
+   33
+  ],
+  "Nigeria": [
+   8,
+   9.5
+  ],
+  "Ghana": [
+   -10,
+   4
+  ],
+  "Kenya": [
+   46,
+   0
+  ],
+  "Angola": [
+   17,
+   -11.5
+  ],
+  "Namibia": [
+   15,
+   -21.5
+  ],
+  "South Africa": [
+   25,
+   -32
+  ],
+  "Saudi Arabia": [
+   44,
+   23
+  ],
+  "Bahrain": [
+   60,
+   28
+  ],
+  "Armenia": [
+   45,
+   43
+  ],
+  "Sri Lanka": [
+   72,
+   5
+  ],
+  "Cambodia": [
+   98,
+   17
+  ],
+  "Malaysia": [
+   93,
+   9
+  ],
+  "Singapore": [
+   94,
+   -3
+  ],
+  "Indonesia": [
+   120,
+   -10
+  ]
+ },
+ "labels_eu": {
+  "Ireland": [
+   -8,
+   53.2
+  ],
+  "Spain": [
+   -3.5,
+   40
+  ],
+  "Netherlands": [
+   2,
+   54.6
+  ],
+  "Germany": [
+   10.5,
+   50.6
+  ],
+  "Denmark": [
+   9.5,
+   56.4
+  ],
+  "Norway": [
+   8.5,
+   62
+  ],
+  "Sweden": [
+   15.5,
+   63.5
+  ],
+  "Finland": [
+   26,
+   63.5
+  ],
+  "Poland": [
+   19.5,
+   52.2
+  ],
+  "Austria": [
+   14,
+   47.8
+  ],
+  "Slovenia": [
+   11,
+   45.3
+  ],
+  "Hungary": [
+   20.5,
+   47.2
+  ],
+  "Italy": [
+   13,
+   42.2
+  ],
+  "Greece": [
+   22,
+   39.3
+  ]
+ }
+}

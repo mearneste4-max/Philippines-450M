@@ -1,8 +1,25 @@
 # 菲律宾 450MHz 方案 · 完整交付包
 
-> 打包日期：2026-10-10 ｜ 版本：v7（22 页，2026-10-10 第二轮数据复核后重建）
-> 用途：移交其他 AI 继续优化这个 PPT
+> 更新日期：2026-10-10 ｜ **当前版本：v8（17 页，重构版）**；v7（22 页）保留作对照
+> 用途：面向 Globe VP 的初次技术交流
 > 语言：PPT 正文英文；说明文档中英对照
+
+**v8 快速入口**
+- 内部版（含英文备注）：`01_交付物/菲律宾450M方案_v8.pptx`；对外版（无备注）：`菲律宾450M方案_v8_对外版.pptx`
+- 讲稿 + 中文手卡：`01_交付物/菲律宾450M讲稿_v8.md`；逐页大纲与设计规则：`04_项目文档/v8_逐页大纲.md`
+- 预览：`02_页面预览/v8/`
+- 重建：
+
+```powershell
+# 依赖：pip install python-pptx pillow pymupdf；字体 Segoe UI（Windows 自带）
+python 03_生成脚本/build_ph450m_v8.py
+python 03_生成脚本/ppt_notes.py 01_交付物/菲律宾450M讲稿_v8.md 01_交付物/菲律宾450M方案_v8.pptx
+python 03_生成脚本/ppt_notes.py --strip 01_交付物/菲律宾450M方案_v8.pptx 01_交付物/菲律宾450M方案_v8_对外版.pptx
+python 03_生成脚本/render_preview.py 01_交付物/菲律宾450M方案_v8.pptx 02_页面预览/v8
+```
+
+- 图标与地图是预生成的，构建不依赖它们的生成脚本：`make_icons.py`（Lucide 图标，需 cairosvg）、`make_worldmap.py`（P5 世界地图与 P14 定位图，需 geopandas 0.14.4 + matplotlib）
+- 待替换图片位（港口实拍、香港轻铁实拍）：见 `06_用到的图片/待替换/README.md`
 
 ---
 
