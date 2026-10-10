@@ -504,7 +504,7 @@ def waffle_png(frac, n=24):
 
 PANELS = [('450 MHz', 0.0, '100%', '1×'),
           ('740 MHz', 0.087, '91%', '2.5–3×'),
-          ('2350 MHz', 0.413, '59%', '12–15×')]
+          ('2.35 GHz', 0.413, '59%', '12–15×')]
 cap(s, X0, 122, 300, 'What the Philippines needs')
 NEEDS = [('waves', 'Reach far', '7,641 islands', 'One site where mid-band needs 2.5–15×'),
          ('mountain', 'Cross rugged terrain', 'Mountainous island interiors', 'Bends over ridges and into valleys'),
