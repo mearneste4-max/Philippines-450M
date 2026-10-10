@@ -730,7 +730,7 @@ page8(s, 0, '03', 'How it is built', 'One build serves all six industries; only 
 LAY = [('smartphone', 'Terminal', 'Hytera 450M Product Introduction PPT_202609_slide9_5.png',
         [('PNC660 450M', 'handheld'), ('MNC650 450M', 'vehicle radio'),
          ('P70 5G+450M', '2026 Q4'), ('PNC660Ex', 'ATEX, 2027 Q2')]),
-       ('radio-tower', 'Network', [str(REPO / '06_用到的图片' / '预处理成品' / 'tower_enb.png'), 'iBS一体化基站_1.png'],
+       ('radio-tower', 'Network', [pick('tower_site', str(REPO / '06_用到的图片' / '预处理成品' / 'tower_enb.png')), 'iBS一体化基站_1.png'],
         [('Fixed eNB', 'tower sites'), ('Mobile eNB', 'portable kit'),
          ('Core', 'private or shared'), ('Backhaul', 'fibre / MW / sat')]),
        ('layers', 'Application', 'Hytera PNC660 450MHz&MCX_slide8_3.png',

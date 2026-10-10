@@ -7,5 +7,6 @@
 |---|---|---|---|
 | `port_hero` | P12 港口页主图（384×250pt，横图） | 跨海大桥 `case_hzmb_bridge.jpg` | 集装箱码头 / 岸桥 / 港口作业实拍，宽 ≥ 1600px |
 | `hk_lightrail` | P14 香港轻铁卡片（104×150pt，竖裁） | 手台在列车上 `PNC660_Snow_Train.jpg` | 轻铁或城市轨交实拍，主体居中，可竖裁 |
+| `tower_site` | 架构页网络层"Fixed tower site"（约 108×88pt 图框，等比缩放不裁切） | 铁塔线稿 + E-pole 机箱合成图 `预处理成品/tower_enb.png` | 铁塔上挂 RRU / 基站的实拍，主体完整、背景干净（天空最好），竖图或方图 |
 
 注意授权：只用资源中心 Approved 图库或可商用图库（如 Unsplash License），不要用 Third-Party_仅限内部使用 的图。
