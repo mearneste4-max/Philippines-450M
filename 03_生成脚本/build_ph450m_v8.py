@@ -416,7 +416,7 @@ CHAPTERS = [('01', 'radio-tower', '450 MHz advantages', 'What can this band do t
             ('02', 'users', 'Target industries', 'Who needs it, and who would pay first?'),
             ('03', 'globe', 'Reference cases', 'How is it built, and where does it run today?'),
             ('04', 'coins', 'Business model', 'How could the network pay for itself?')]
-PAGES = ['Pages 3 – 5', 'Pages 6 – 13', 'Pages 14 – 17', 'Pages 18 – 19']   # 增删页后同步改这里
+PAGES = ['Pages 3 – 6', 'Pages 7 – 14', 'Pages 15 – 19', 'Pages 20 – 21']   # 增删页后同步改这里
 
 
 def numicon(s, ic, num, x, y, size, disc='NAVY', badge='LIME', icol='white'):
@@ -466,6 +466,41 @@ strip(s, 444, 'handshake', 'An open discussion:', 'the spectrum is Globe\u2019s;
 
 s = newslide()
 divider(s, 0)
+
+# ================================================================ 第 1 章：业务定位（领导意见 1：稀缺低频，B2B/B2G，不适合 2C——原因是带宽小）
+s = newslide()
+page8(s, 0, '01', 'Positioning', 'A scarce low band, best spent on B2B and B2G, not on consumer service')
+cap(s, X0, 122, 400, 'Why not consumer: the channel is narrow')
+BW = [('450 MHz (Band 31 / 72)', 5, '≈ 2×5 MHz', 'GREEN'),
+      ('One typical LTE carrier', 20, '20 MHz', 'NAVY_L'),
+      ('One typical 5G carrier (3.5 GHz)', 100, '100 MHz', 'NAVY')]
+for i, (lab, mhz, txt, col) in enumerate(BW):
+    y = 146 + i * 40
+    t8(s, X0, y, 384, 14, lab, 10, 'STEEL', F_BODY, L, MID)
+    box(s, X0, y + 17, max(6, mhz * 3.0), 14, C[col])
+    t8(s, X0 + max(6, mhz * 3.0) + 8, y + 15, 90, 18, txt, 11, 'NAVY', F_HEAD, L, MID)
+t8(s, X0, 268, 384, 34, 'One 450 MHz cell covers a very large area, so this narrow channel\nis shared by far more users than a mid-band cell.', 10.5, 'STEEL', F_BODY, L, TOP, line=1.2)
+for j, (head, rows, bg, col, ic) in enumerate([
+        ('Fits: B2B and B2G', ['Power, water, oil & gas, rail', 'Emergency and public safety', 'IoT, SCADA, MCPTT'], 'GREEN_L', 'GREEN', 'check'),
+        ('Not for consumers', ['Smartphone internet', 'Video streaming', 'Home broadband'], 'CARD', 'STEEL', 'info')]):
+    x = X0 + j * 198
+    box(s, x, 314, 186, 130, C[bg])
+    box(s, x, 314, 186, 4, C[col])
+    icap(s, ic, x + PAD, 326, head, col.lower() if col != 'STEEL' else 'steel', col, 18)
+    for k, r in enumerate(rows):
+        t8(s, x + PAD, 356 + k * 26, 160, 22, r, 11.5, 'INK', F_BODY, L, MID)
+cap(s, 456, 122, 456, 'Three more reasons')
+WHY = [('smartphone', 'No consumer handsets', 'Mainstream smartphones do not support Band 31 or 72. Devices are routers, meters and rugged handhelds.'),
+       ('badge-check', 'Licensed for critical infrastructure', 'Germany reserved the band for energy and water; Singapore for public safety; South Africa for rail.'),
+       ('zap', 'Built for resilience, not consumer cost', 'Sites carry long backup power (72 h at 450connect) and priority for mission-critical traffic.')]
+for i, (ic, head, body) in enumerate(WHY):
+    y = 146 + i * 100
+    box(s, 456, y, 456, 90, C['CARD'])
+    icon(s, ic, 456 + PAD, y + 23, 44, 'white', disc='NAVY')
+    t8(s, 456 + 76, y + 10, 364, 22, head, 13.5, 'NAVY', F_HEAD, L, MID)
+    t8(s, 456 + 76, y + 34, 364, 48, body, 11, 'STEEL', F_BODY, L, TOP, line=1.2)
+strip(s, 456, 'info', 'Market signal:', 'Norway\u2019s ice began moving its 450 MHz consumer users to industrial service in 2024.', h=40)
+foot(s, '3GPP LTE / NR channel bandwidths; Bundesnetzagentur (Nov 2020, Mar 2021); 450 MHz Alliance, Equipment Report (May 2025) p4-p5; Annual Global Update (Dec 2025) p6-p9')
 
 # ================================================================ 第 1 章：需求 + 450 MHz 的回答（原 The gap 与 Why 450 合并）
 s = newslide()
@@ -813,6 +848,38 @@ t8(s, 456 + 58, 368, 384, 30, 'Multi-vendor by standard', 13, 'NAVY', F_HEAD, L,
 t8(s, 456 + 58, 394, 384, 30, 'The Alliance\u2019s eNB list itself spans Ericsson, Huawei, Hytera, Nokia and ZTE.', 10.5, 'STEEL', F_BODY, L, MID, line=1.15)
 strip(s, 452, 'handshake', 'For Globe:', 'add Hytera radio and terminals without replacing the core you run today. Interoperability is verified per project.', h=40)
 foot(s, 'Hytera news release (Aug 2024); 450 MHz Alliance, Equipment Report (May 2025) p5 \u00a74.1-4.2; 450connect whitelist; 3GPP TS 36.300 / 36.413 / 23.280')
+
+# ================================================================ 第 3 章：德国 450connect 详解（领导意见 2）
+s = newslide()
+page8(s, 0, '03', 'Reference  \u00b7  Germany', '450connect: one nationwide 450 MHz network, shared by Germany\u2019s utilities')
+PRE = REPO / '06_用到的图片' / '预处理成品'
+box(s, X0, 122, 270, 320, C['PAPER'])
+s.shapes.add_picture(str(PRE / 'loc_germany.png'), Pt(X0 + 24), Pt(132), Pt(208), Pt(300))
+chip(s, X0 + PAD, 410, 110, 22, 'Band 72', 'WHITE', 'NAVY', 10.5)
+chip(s, X0 + PAD + 118, 410, 120, 22, 'Licence to 2040', 'NAVY', 'WHITE', 10.5)
+FACTS = [('radio-tower', '~1,600', 'sites for nationwide coverage'),
+         ('zap', '72 h', 'battery backup at every site'),
+         ('waves', '2\u00d74.74 MHz', '451.00\u2013455.74 / 461.00\u2013465.74 MHz'),
+         ('users', '4 \u00d7 25%', 'owned by utility groups incl. E.ON and Alliander'),
+         ('server', 'Nokia', 'radio, core, backhaul and power backup; O&M to 2040'),
+         ('smartphone', 'PNC660', 'Hytera handheld on the 450connect whitelist')]
+for i, (ic, v, lab) in enumerate(FACTS):
+    r, c = divmod(i, 2)
+    x, y = 342 + c * 290, 122 + r * 82
+    box(s, x, y, 280, 74, C['GREEN_L'] if i == 5 else C['CARD'])
+    icon(s, ic, x + PAD, y + 19, 36, 'white', disc='GREEN' if i == 5 else 'NAVY')
+    t8(s, x + 64, y + 8, 206, 32, v, 22, 'GREEN' if i == 5 else 'NAVY', F_NUM, L, MID)
+    t8(s, x + 64, y + 40, 206, 28, lab, 10, 'STEEL', F_BODY, L, MID, line=1.1)
+cap(s, 342, 374, 400, 'From licence to network')
+TL = [('Nov 2020', 'Band reserved for energy & water'), ('Mar 2021', 'Licence awarded'),
+      ('Feb 2022', 'Nokia selected'), ('End 2024', 'Full operation planned')]
+for i, (d, t) in enumerate(TL):
+    x = 342 + i * 143
+    box(s, x, 398, 135, 44, C['CARD'])
+    t8(s, x + 10, 400, 120, 18, d, 11, 'GREEN', F_HEAD, L, MID)
+    t8(s, x + 10, 418, 120, 22, t, 9.5, 'INK', F_BODY, L, MID, line=1.05)
+strip(s, 456, 'check', 'For Globe:', 'one operator, one network, many utility customers \u2014 and no consumer service.', h=40)
+foot(s, 'Bundesnetzagentur press releases (Mar 2021); Nokia newsroom (Feb 2022); 450 MHz Alliance, RFI (2025) p5, Global Update (Dec 2025) p9; 450connect; Hytera whitelist certificate')
 
 # ================================================================ P14 参考案例：3 个 450 MHz 网络 + 3 个 MCS 部署（1:1，卡片同规格）
 s = newslide()
