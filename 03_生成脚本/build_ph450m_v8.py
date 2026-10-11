@@ -489,8 +489,13 @@ for j, (head, rows, bg, col, ic) in enumerate([
     icap(s, ic, x + PAD, 326, head, col.lower() if col != 'STEEL' else 'steel', col, 18)
     for k, r in enumerate(rows):
         t8(s, x + PAD, 356 + k * 26, 160, 22, r, 11.5, 'INK', F_BODY, L, MID)
-photo(s, asset('菲律宾解决方案包装_slide3_5.jpg'), 456, 122, 456, 112, fy=0.55)
-chip(s, 456 + 12, 122 + 80, 196, 22, 'Critical infrastructure first', 'WHITE', 'NAVY', 10)
+# 三联图：这张网真正的用户——公用事业、公共安全、交通（与左侧"Fits"呼应）
+for k, (img, lab, fy) in enumerate([('20260908_海本二部培训_HyTalk-MC方案_课件_V6.1_slide41_1.png', 'Utilities', 0.4),
+                                     ('China Yunnan Fire Rescue_Flood Rescue Operation_Girls and Cat_1.jpg', 'Public safety', 0.35),
+                                     ('port_hero.jpg', 'Transport', 0.5)]):
+    xx = 456 + k * 154
+    photo(s, asset(img), xx, 122, 148, 112, fy=fy)
+    chip(s, xx + 8, 204, len(lab) * 6.2 + 18, 20, lab, 'WHITE', 'NAVY', 9.5)
 cap(s, 456, 244, 456, 'Three more reasons')
 WHY = [('smartphone', 'No consumer handsets', 'Phones lack Band 31/72; devices are routers, meters, rugged handhelds.'),
        ('badge-check', 'Licensed for critical infrastructure', 'Germany: energy & water. Singapore: public safety. South Africa: rail.'),
