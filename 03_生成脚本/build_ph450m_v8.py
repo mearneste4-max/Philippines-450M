@@ -884,7 +884,7 @@ for i, (d, t) in enumerate(TL):
     t8(s, x + 10, 400, 120, 18, d, 11, 'GREEN', F_HEAD, L, MID)
     t8(s, x + 10, 418, 120, 22, t, 9.5, 'INK', F_BODY, L, MID, line=1.05)
 strip(s, 456, 'check', 'For Globe:', 'one operator, one network, many utility customers \u2014 and no consumer service.', h=40)
-foot(s, 'Bundesnetzagentur (Mar 2021); Nokia (Feb 2022); 450connect press releases (Feb 2025, Oct 2025, Feb 2026); 50komma2 (Feb 2026); Hytera MWC 2026. Photo \u00a9 450connect GmbH via PresseBox')
+foot(s, 'Bundesnetzagentur (Mar 2021); Nokia (Feb 2022); 450connect press releases (Feb 2025, Oct 2025, Feb 2026); 50komma2 (Feb 2026); Hytera MWC 2026. Photo \u00a9 Westfalen Weser Netz GmbH, via 450connect')
 
 # ================================================================ P14 参考案例：3 个 450 MHz 网络 + 3 个 MCS 部署（1:1，卡片同规格）
 s = newslide()
