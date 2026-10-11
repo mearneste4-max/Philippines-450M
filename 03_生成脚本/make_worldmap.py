@@ -105,3 +105,38 @@ for key, (name, (cx, cy), hdeg, dot) in LOCS.items():
     fig.savefig(OUT / ('loc_%s.png' % key), transparent=True, dpi=300)
     plt.close(fig)
 print('saved locator maps:', ', '.join(LOCS))
+
+
+# ---------------------------------------------------------------- P18 德国覆盖示意：全境填色 + 稀疏基站图标（避免密集点阵的不适感）
+import random
+
+from matplotlib.offsetbox import AnnotationBbox, OffsetImage
+from shapely.geometry import Point
+
+de = w[w.name == 'Germany'].geometry.iloc[0]
+minx, miny, maxx, maxy = de.bounds
+rnd = random.Random(450)
+pts, step = [], 1.75
+lat_step = step * 0.866 * math.cos(math.radians(51))
+row, y = 0, miny + 0.45
+while y <= maxy:
+    x = minx + 0.5 + (step / 2 if row % 2 else 0)
+    while x <= maxx:
+        p = Point(x + rnd.uniform(-0.15, 0.15), y + rnd.uniform(-0.1, 0.1))
+        if de.buffer(-0.25).contains(p):
+            pts.append((p.x, p.y))
+        x += step
+    y += lat_step; row += 1
+cx, cy, hdeg = 10.4, 51.1, 9.6
+wdeg = hdeg * (208 / 300) / math.cos(math.radians(cy))
+fig = plt.figure(figsize=(2.08, 3.0), dpi=300)
+ax = fig.add_axes([0, 0, 1, 1])
+w.plot(ax=ax, color=w.name.map(lambda n: '#0B308E' if n == 'Germany' else '#E6EAF1'), edgecolor='white', linewidth=0.6)
+ico = plt.imread(str(Path(__file__).resolve().parent.parent / '05_素材库' / '图标_lucide' / 'png' / 'radio-tower_white.png'))
+for x, y in pts:
+    ax.add_artist(AnnotationBbox(OffsetImage(ico, zoom=0.048), (x, y), frameon=False, zorder=6))
+ax.set_xlim(cx - wdeg / 2, cx + wdeg / 2); ax.set_ylim(cy - hdeg / 2, cy + hdeg / 2)
+ax.set_aspect('auto'); ax.axis('off')
+fig.savefig(OUT / 'loc_germany_sites.png', transparent=True, dpi=300)
+plt.close(fig)
+print('saved Germany coverage sketch: %d tower icons' % len(pts))

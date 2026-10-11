@@ -854,9 +854,10 @@ s = newslide()
 page8(s, 0, '03', 'Reference  \u00b7  Germany', '450connect: one nationwide 450 MHz network, shared by Germany\u2019s utilities')
 PRE = REPO / '06_用到的图片' / '预处理成品'
 box(s, X0, 122, 270, 320, C['PAPER'])
-s.shapes.add_picture(str(PRE / 'loc_germany.png'), Pt(X0 + 24), Pt(132), Pt(208), Pt(300))
-chip(s, X0 + PAD, 410, 110, 22, 'Band 72', 'WHITE', 'NAVY', 10.5)
-chip(s, X0 + PAD + 118, 410, 120, 22, 'Licence to 2040', 'NAVY', 'WHITE', 10.5)
+s.shapes.add_picture(str(PRE / 'loc_germany_sites.png'), Pt(X0 + 135 - 93.5), Pt(124), Pt(187), Pt(270))
+t8(s, X0, 393, 270, 14, 'Illustrative: >95% of Germany covered, ~1,600 sites', 8, 'SILVER', F_BODY, CEN, MID)
+chip(s, X0 + PAD, 412, 110, 22, 'Band 72', 'WHITE', 'NAVY', 10.5)
+chip(s, X0 + PAD + 118, 412, 120, 22, 'Licence to 2040', 'NAVY', 'WHITE', 10.5)
 FACTS = [('radio-tower', '~1,600', 'sites for nationwide coverage'),
          ('zap', '72 h', 'battery backup at every site'),
          ('waves', '2\u00d74.74 MHz', '451.00\u2013455.74 / 461.00\u2013465.74 MHz'),
