@@ -659,8 +659,8 @@ for i, (ic, name, pay, fit_, speed, key) in enumerate(RANK):
     anchor = i < 2
     box(s, X0, y, CW, 44, C['GREEN_L'] if anchor else (C['CARD'] if i % 2 == 0 else C['PAPER']))
     t8(s, X0 + 8, y, 30, 44, str(i + 1), 20, 'GREEN' if anchor else 'SILVER', F_NUM, CEN, MID)
-    photo(s, asset(THUMB[name]), X0 + 42, y + 4, 60, 36, fy=0.45)
-    t8(s, X0 + 114, y, 150, 44, name, 15, 'NAVY', F_HEAD, L, MID)
+    icon(s, ic, X0 + 48, y + 7, 30, 'white', disc='GREEN' if anchor else 'NAVY')
+    t8(s, X0 + 92, y, 160, 44, name, 15, 'NAVY', F_HEAD, L, MID)
     for (_, _, cx), k in zip(COLS, (pay, fit_, speed)):
         dots(s, cx, y + 22, k, 'GREEN' if anchor else 'NAVY')
     t8(s, 704, y, 200, 44, key, 12, 'INK', F_BODY, L, MID)
@@ -944,13 +944,9 @@ CHAIN_IMG = [str(REPO / '06_用到的图片' / '预处理成品' / 'pnc660_450m_
 for i, (ic, name, d, col) in enumerate(CHAIN):
     x = X0 + i * 300
     box(s, x, 122, 264, 76, C[col])
-    if i < 2:
-        box(s, x + 6, 128, 64, 64, C['WHITE'])
-        fit(s, illu(CHAIN_IMG[i], 1400), x + 10, 131, 56, 58)
-    else:
-        photo(s, asset(CHAIN_IMG[i]), x + 6, 128, 64, 64, fy=0.45)
-    t8(s, x + 82, 130, 176, 30, name, 15, 'WHITE', F_HEAD, L, MID)
-    t8(s, x + 82, 158, 176, 28, d, 12, 'MIST' if col != 'GREEN' else 'WHITE', F_BODY, L, MID)
+    icon(s, ic, x + PAD, 140, 40, 'white')
+    t8(s, x + 68, 130, 186, 30, name, 15, 'WHITE', F_HEAD, L, MID)
+    t8(s, x + 68, 158, 186, 28, d, 12, 'MIST' if col != 'GREEN' else 'WHITE', F_BODY, L, MID)
     if i < 2:
         icon(s, 'arrow-right', x + 270, 150, 24, 'steel')
 cap(s, X0, 216, 400, 'Six revenue lines  ·  and who buys them')
