@@ -853,13 +853,15 @@ foot(s, 'Hytera news release (Aug 2024); 450 MHz Alliance, Equipment Report (May
 s = newslide()
 page8(s, 0, '03', 'Reference  \u00b7  Germany', '450connect: one nationwide 450 MHz network, shared by Germany\u2019s utilities')
 PRE = REPO / '06_用到的图片' / '预处理成品'
-box(s, X0, 122, 270, 320, C['NAVY'])
-fit(s, str(PRE / 'germany_silhouette.png'), X0 + 70, 150, 200, 280)      # 德国轮廓水印
-cap(s, X0 + 22, 144, 220, 'Coverage', 'LIME')
-t8(s, X0 + 20, 196, 240, 80, '90%+', 60, 'WHITE', F_NUM, L, MID)
-t8(s, X0 + 22, 276, 230, 40, 'of Germany\u2019s area by Q4 2025,\nup from 30% in Q1 2025', 12.5, 'MIST', F_BODY, L, TOP, line=1.2)
-chip(s, X0 + 22, 402, 128, 24, 'B72 \u00b7 2\u00d74.74 MHz', 'NAVY', 'LIME', 10)
-chip(s, X0 + 158, 402, 92, 24, 'To 2040', 'NAVY', 'WHITE', 10)
+# 左：450connect 站点实拍（领导要求配真实图），底部压半透明深蓝数据条
+photo(s, asset('450connect_site.jpg'), X0, 122, 270, 320, fx=0.48, fy=0.5)
+ov = box(s, X0, 338, 270, 104, C['NAVY'])
+_sf = ov.fill._xPr.find(qn('a:solidFill'))[0]                       # 88% 不透明
+_sf.append(_sf.makeelement(qn('a:alpha'), {'val': '88000'}))
+cap(s, X0 + 18, 348, 230, 'Coverage', 'LIME')
+t8(s, X0 + 16, 362, 120, 44, '90%+', 32, 'WHITE', F_NUM, L, MID)
+t8(s, X0 + 124, 366, 136, 40, 'of Germany\u2019s area\nby Q4 2025', 10.5, 'MIST', F_BODY, L, MID, line=1.15)
+t8(s, X0 + 18, 412, 240, 20, 'Band 72  \u00b7  2\u00d74.74 MHz  \u00b7  licence to 2040', 9.5, 'WHITE', F_HEAD, L, MID)
 FACTS = [('radio-tower', '1,000+', 'sites live (Oct 2025), ~1,600 planned'),
          ('cpu', '10,000+', 'substations connected (Feb 2026)'),
          ('users', '70+', 'energy and water utilities behind it, via 4 equal shareholders'),
@@ -882,7 +884,7 @@ for i, (d, t) in enumerate(TL):
     t8(s, x + 10, 400, 120, 18, d, 11, 'GREEN', F_HEAD, L, MID)
     t8(s, x + 10, 418, 120, 22, t, 9.5, 'INK', F_BODY, L, MID, line=1.05)
 strip(s, 456, 'check', 'For Globe:', 'one operator, one network, many utility customers \u2014 and no consumer service.', h=40)
-foot(s, 'Bundesnetzagentur (Mar 2021); Nokia (Feb 2022); 450connect press releases (Feb 2025, Oct 2025, Feb 2026); 50komma2 (Feb 2026); Hytera MWC 2026 announcement')
+foot(s, 'Bundesnetzagentur (Mar 2021); Nokia (Feb 2022); 450connect press releases (Feb 2025, Oct 2025, Feb 2026); 50komma2 (Feb 2026); Hytera MWC 2026. Photo: 450connect radio site')
 
 # ================================================================ P14 参考案例：3 个 450 MHz 网络 + 3 个 MCS 部署（1:1，卡片同规格）
 s = newslide()
