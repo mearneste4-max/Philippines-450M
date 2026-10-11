@@ -489,16 +489,18 @@ for j, (head, rows, bg, col, ic) in enumerate([
     icap(s, ic, x + PAD, 326, head, col.lower() if col != 'STEEL' else 'steel', col, 18)
     for k, r in enumerate(rows):
         t8(s, x + PAD, 356 + k * 26, 160, 22, r, 11.5, 'INK', F_BODY, L, MID)
-cap(s, 456, 122, 456, 'Three more reasons')
-WHY = [('smartphone', 'No consumer handsets', 'Mainstream smartphones do not support Band 31 or 72. Devices are routers, meters and rugged handhelds.'),
-       ('badge-check', 'Licensed for critical infrastructure', 'Germany reserved the band for energy and water; Singapore for public safety; South Africa for rail.'),
-       ('zap', 'Built for resilience, not consumer cost', 'Sites carry long backup power (72 h at 450connect) and priority for mission-critical traffic.')]
+photo(s, asset('菲律宾解决方案包装_slide3_5.jpg'), 456, 122, 456, 112, fy=0.55)
+chip(s, 456 + 12, 122 + 80, 196, 22, 'Critical infrastructure first', 'WHITE', 'NAVY', 10)
+cap(s, 456, 244, 456, 'Three more reasons')
+WHY = [('smartphone', 'No consumer handsets', 'Phones lack Band 31/72; devices are routers, meters, rugged handhelds.'),
+       ('badge-check', 'Licensed for critical infrastructure', 'Germany: energy & water. Singapore: public safety. South Africa: rail.'),
+       ('zap', 'Built for resilience, not consumer cost', 'Long backup power (72 h at 450connect) and mission-critical priority.')]
 for i, (ic, head, body) in enumerate(WHY):
-    y = 146 + i * 100
-    box(s, 456, y, 456, 90, C['CARD'])
-    icon(s, ic, 456 + PAD, y + 23, 44, 'white', disc='NAVY')
-    t8(s, 456 + 76, y + 10, 364, 22, head, 13.5, 'NAVY', F_HEAD, L, MID)
-    t8(s, 456 + 76, y + 34, 364, 48, body, 11, 'STEEL', F_BODY, L, TOP, line=1.2)
+    y = 264 + i * 62
+    box(s, 456, y, 456, 56, C['CARD'])
+    icon(s, ic, 456 + PAD, y + 11, 34, 'white', disc='NAVY')
+    t8(s, 456 + 64, y + 6, 376, 20, head, 12.5, 'NAVY', F_HEAD, L, MID)
+    t8(s, 456 + 64, y + 27, 376, 22, body, 10.5, 'STEEL', F_BODY, L, MID)
 strip(s, 456, 'info', 'Market signal:', 'Norway\u2019s ice began moving its 450 MHz consumer users to industrial service in 2024.', h=40)
 foot(s, '3GPP LTE / NR channel bandwidths; Bundesnetzagentur (Nov 2020, Mar 2021); 450 MHz Alliance, Equipment Report (May 2025) p4-p5; Annual Global Update (Dec 2025) p6-p9')
 
@@ -638,6 +640,9 @@ divider(s, 1)
 # ================================================================ P6 行业优先级
 s = newslide()
 page8(s, 0, '02', 'Who pays first', 'Start with the utilities: they pay first and fit best')
+THUMB = {'Power': '20260908_海本二部培训_HyTalk-MC方案_课件_V6.1_slide41_1.png', 'Water': 'water_pumps.png',
+         'Emergency': 'China Yunnan Fire Rescue_Flood Rescue Operation_Girls and Cat_1.jpg',
+         'Police': '20241104_资源中心_ICC方案_场景版_V2_slide10_1.png', 'Rail': 'v6_metro.png', 'Port': 'port_hero.jpg'}
 RANK = [('zap', 'Power', 3, 3, 3, 'Proven anchor abroad'),
         ('droplets', 'Water', 2, 3, 3, 'Same sites as power'),
         ('siren', 'Emergency', 2, 3, 2, 'Typhoon readiness'),
@@ -654,8 +659,8 @@ for i, (ic, name, pay, fit_, speed, key) in enumerate(RANK):
     anchor = i < 2
     box(s, X0, y, CW, 44, C['GREEN_L'] if anchor else (C['CARD'] if i % 2 == 0 else C['PAPER']))
     t8(s, X0 + 8, y, 30, 44, str(i + 1), 20, 'GREEN' if anchor else 'SILVER', F_NUM, CEN, MID)
-    icon(s, ic, X0 + 48, y + 7, 30, 'white', disc='GREEN' if anchor else 'NAVY')
-    t8(s, X0 + 92, y, 160, 44, name, 15, 'NAVY', F_HEAD, L, MID)
+    photo(s, asset(THUMB[name]), X0 + 42, y + 4, 60, 36, fy=0.45)
+    t8(s, X0 + 114, y, 150, 44, name, 15, 'NAVY', F_HEAD, L, MID)
     for (_, _, cx), k in zip(COLS, (pay, fit_, speed)):
         dots(s, cx, y + 22, k, 'GREEN' if anchor else 'NAVY')
     t8(s, 704, y, 200, 44, key, 12, 'INK', F_BODY, L, MID)
@@ -814,9 +819,8 @@ s = newslide()
 page8(s, 0, '03', 'Ecosystem and compatibility', 'A 450 MHz Alliance member, built to plug into the network Globe runs')
 cap(s, X0, 122, 380, 'In the 450 MHz ecosystem')
 ECO = [('badge-check', '450 MHz Alliance member', 'Joined August 2024'),
-       ('smartphone', 'Alliance device supplier list', 'Equipment Report 2025'),
-       ('radio-tower', 'Alliance macro eNB supplier list', 'Equipment Report 2025'),
-       ('check', 'Operator-accepted terminal', '450connect whitelist, Germany'),
+       ('radio-tower', 'Alliance device and macro eNB supplier lists', 'Equipment Report 2025'),
+       ('check', 'Operator-accepted terminal', '450connect whitelist, Germany (below)'),
        ('layers', 'Band 31 and Band 72 portfolio', 'Terminals, eNB and MCS platform')]
 for i, (ic, head, sub) in enumerate(ECO):
     y = 144 + i * 58
@@ -824,6 +828,8 @@ for i, (ic, head, sub) in enumerate(ECO):
     icon(s, ic, X0 + PAD, y + 9, 34, 'white', disc='GREEN' if i == 0 else 'NAVY')
     t8(s, X0 + 64, y + 6, 310, 22, head, 13, 'NAVY', F_HEAD, L, MID)
     t8(s, X0 + 64, y + 27, 310, 18, sub, 10.5, 'STEEL', F_BODY, L, MID)
+box(s, X0, 376, 384, 66, C['WHITE'], C['LINE'], 0.75)
+fit(s, illu(cropcache('cert_head3.png', asset('cert_top.png'), (0.02, 0.08, 0.66, 0.56)), 1400), X0 + 8, 380, 368, 58)
 cap(s, 456, 122, 456, 'Compatible by design  ·  3GPP standard interfaces')
 HY = [('smartphone', 'Hytera terminals', 'LTE Uu'), ('radio-tower', 'Hytera 450 MHz eNB', 'S1'),
       ('layers', 'Hytera MCS platform', 'SIP / MCX')]
@@ -932,12 +938,19 @@ page8(s, 0, '04', 'Business model', 'Utilities fund the coverage; every other in
 CHAIN = [('package', 'Hytera', 'Radio, terminals, platform', 'NAVY'),
          ('radio-tower', 'Globe Telecom', 'Spectrum, network, customers', 'GREEN'),
          ('building-2', 'Anchor customers', 'Contract capacity first', 'NAVY_L')]
+CHAIN_IMG = [str(REPO / '06_用到的图片' / '预处理成品' / 'pnc660_450m_pair.png'),
+             str(REPO / '06_用到的图片' / '预处理成品' / 'tower_rru.png'),
+             '20260908_海本二部培训_HyTalk-MC方案_课件_V6.1_slide41_1.png']
 for i, (ic, name, d, col) in enumerate(CHAIN):
     x = X0 + i * 300
     box(s, x, 122, 264, 76, C[col])
-    icon(s, ic, x + PAD, 140, 40, 'white')
-    t8(s, x + 68, 130, 186, 30, name, 15, 'WHITE', F_HEAD, L, MID)
-    t8(s, x + 68, 158, 186, 28, d, 12, 'MIST' if col != 'GREEN' else 'WHITE', F_BODY, L, MID)
+    if i < 2:
+        box(s, x + 6, 128, 64, 64, C['WHITE'])
+        fit(s, illu(CHAIN_IMG[i], 1400), x + 10, 131, 56, 58)
+    else:
+        photo(s, asset(CHAIN_IMG[i]), x + 6, 128, 64, 64, fy=0.45)
+    t8(s, x + 82, 130, 176, 30, name, 15, 'WHITE', F_HEAD, L, MID)
+    t8(s, x + 82, 158, 176, 28, d, 12, 'MIST' if col != 'GREEN' else 'WHITE', F_BODY, L, MID)
     if i < 2:
         icon(s, 'arrow-right', x + 270, 150, 24, 'steel')
 cap(s, X0, 216, 400, 'Six revenue lines  ·  and who buys them')
