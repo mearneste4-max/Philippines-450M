@@ -672,7 +672,7 @@ IND = [
          stats=[('121', 'electric cooperatives\nunder NEA'), ('1.4M', 'consumers cut off\nby Typhoon Tino')],
          does=[('cpu', 'SCADA &\nfeeder automation'), ('radio', 'Push-to-talk\nfor line crews'),
                ('gauge', 'Smart meters,\ndeep indoors')],
-         proof=[('Germany  450connect', 'B72  ·  >95% coverage'), ('Malaysia  TNB', 'B31  ·  4 areas')],
+         proof=[('Germany  450connect', 'B72  ·  90%+ area'), ('Malaysia  TNB', 'B31  ·  4 areas')],
          sells=['Capacity package', 'IoT per meter', 'SCADA O&M'],
          src='NEA; Department of Energy (5 Nov 2025); 450 MHz Alliance, RFI for devices (2025) p5, Annual Global Update (Dec 2025) p8'),
     dict(n=8, rank=2, name='Water', ic='droplets',
@@ -856,16 +856,16 @@ PRE = REPO / '06_用到的图片' / '预处理成品'
 box(s, X0, 122, 270, 320, C['NAVY'])
 fit(s, str(PRE / 'germany_silhouette.png'), X0 + 70, 150, 200, 280)      # 德国轮廓水印
 cap(s, X0 + 22, 144, 220, 'Coverage', 'LIME')
-t8(s, X0 + 20, 196, 240, 80, '>95%', 60, 'WHITE', F_NUM, L, MID)
-t8(s, X0 + 22, 276, 230, 40, 'of Germany, on one\nnational 450 MHz network', 12.5, 'MIST', F_BODY, L, TOP, line=1.2)
-chip(s, X0 + 22, 402, 104, 24, 'Band 72', 'NAVY', 'LIME', 10.5)
-chip(s, X0 + 134, 402, 116, 24, 'Licence to 2040', 'NAVY', 'WHITE', 10.5)
-FACTS = [('radio-tower', '~1,600', 'sites for nationwide coverage'),
-         ('zap', '72 h', 'battery backup at every site'),
-         ('waves', '2\u00d74.74 MHz', '451.00\u2013455.74 / 461.00\u2013465.74 MHz'),
-         ('users', '4 \u00d7 25%', 'owned by utility groups incl. E.ON and Alliander'),
+t8(s, X0 + 20, 196, 240, 80, '90%+', 60, 'WHITE', F_NUM, L, MID)
+t8(s, X0 + 22, 276, 230, 40, 'of Germany\u2019s area by Q4 2025,\nup from 30% in Q1 2025', 12.5, 'MIST', F_BODY, L, TOP, line=1.2)
+chip(s, X0 + 22, 402, 128, 24, 'B72 \u00b7 2\u00d74.74 MHz', 'NAVY', 'LIME', 10)
+chip(s, X0 + 158, 402, 92, 24, 'To 2040', 'NAVY', 'WHITE', 10)
+FACTS = [('radio-tower', '1,000+', 'sites live (Oct 2025), ~1,600 planned'),
+         ('cpu', '10,000+', 'substations connected (Feb 2026)'),
+         ('users', '70+', 'energy and water utilities behind it, via 4 equal shareholders'),
+         ('zap', '72 h', 'battery backup; data plus MCPTT voice with dispatch'),
          ('server', 'Nokia', 'radio, core, backhaul and power backup; O&M to 2040'),
-         ('smartphone', 'PNC660', 'Hytera handheld on the 450connect whitelist')]
+         ('smartphone', 'PNC660', 'Hytera handheld whitelisted (announced MWC 2026)')]
 for i, (ic, v, lab) in enumerate(FACTS):
     r, c = divmod(i, 2)
     x, y = 342 + c * 290, 122 + r * 82
@@ -875,21 +875,21 @@ for i, (ic, v, lab) in enumerate(FACTS):
     t8(s, x + 64, y + 40, 206, 28, lab, 10, 'STEEL', F_BODY, L, MID, line=1.1)
 cap(s, 342, 374, 400, 'From licence to network')
 TL = [('Nov 2020', 'Band reserved for energy & water'), ('Mar 2021', 'Licence awarded'),
-      ('Feb 2022', 'Nokia selected'), ('End 2024', 'Full operation planned')]
+      ('Oct 2025', '1,000 sites, 90% area'), ('2026', 'Nationwide target')]
 for i, (d, t) in enumerate(TL):
     x = 342 + i * 143
     box(s, x, 398, 135, 44, C['CARD'])
     t8(s, x + 10, 400, 120, 18, d, 11, 'GREEN', F_HEAD, L, MID)
     t8(s, x + 10, 418, 120, 22, t, 9.5, 'INK', F_BODY, L, MID, line=1.05)
 strip(s, 456, 'check', 'For Globe:', 'one operator, one network, many utility customers \u2014 and no consumer service.', h=40)
-foot(s, 'Bundesnetzagentur press releases (Mar 2021); Nokia newsroom (Feb 2022); 450 MHz Alliance, RFI (2025) p5, Global Update (Dec 2025) p9; 450connect; Hytera whitelist certificate')
+foot(s, 'Bundesnetzagentur (Mar 2021); Nokia (Feb 2022); 450connect press releases (Feb 2025, Oct 2025, Feb 2026); 50komma2 (Feb 2026); Hytera MWC 2026 announcement')
 
 # ================================================================ P14 参考案例：3 个 450 MHz 网络 + 3 个 MCS 部署（1:1，卡片同规格）
 s = newslide()
 page8(s, 0, '03', 'References', 'Three 450 MHz networks, three national mission-critical deployments')
 PRE = REPO / '06_用到的图片' / '预处理成品'
 ROWS = [('radio-tower', 'green', 'GREEN', '450 MHz networks  ·  operator networks', 'GREEN_L', [
-            ('Germany', '450connect', 'loc_germany.png', 'B72', 'national utility network', ['>95% coverage', 'PNC660 whitelisted']),
+            ('Germany', '450connect', 'loc_germany.png', 'B72', 'national utility network', ['90%+ area (Q4 2025)', 'PNC660 whitelisted']),
             ('Malaysia', 'TNB', 'loc_malaysia.png', 'B31', 'utility network', ['Phase 1: 4 areas', 'Phase 2 tendering']),
             ('Singapore', 'Public safety', 'loc_singapore.png', 'B31', 'public safety network', ['In service', 'Same band as PH'])]),
         ('layers', 'navy', 'NAVY', 'Hytera mission-critical deployments at national scale', 'CARD', [
