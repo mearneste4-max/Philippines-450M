@@ -140,3 +140,15 @@ ax.set_aspect('auto'); ax.axis('off')
 fig.savefig(OUT / 'loc_germany_sites.png', transparent=True, dpi=300)
 plt.close(fig)
 print('saved Germany coverage sketch: %d tower icons' % len(pts))
+
+
+# ---------------------------------------------------------------- P18 德国轮廓水印（深蓝卡片上的浅色剪影）
+fig = plt.figure(figsize=(2.6, 3.4), dpi=300)
+ax = fig.add_axes([0, 0, 1, 1])
+gpd.GeoSeries([de]).plot(ax=ax, color='#16399A', edgecolor='#2A4FA8', linewidth=0.8)
+b = de.bounds; padx, pady = 0.25, 0.2
+ax.set_xlim(b[0] - padx, b[2] + padx); ax.set_ylim(b[1] - pady, b[3] + pady)
+ax.set_aspect(1 / math.cos(math.radians(51))); ax.axis('off')
+fig.savefig(OUT / 'germany_silhouette.png', transparent=True, dpi=300, bbox_inches='tight', pad_inches=0)
+plt.close(fig)
+print('saved Germany silhouette')
